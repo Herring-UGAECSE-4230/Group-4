@@ -1,3 +1,4 @@
+#Before running program type, sudo pigpiod, into the command line
 import pigpio
 
 # Initializing pigpio instance
