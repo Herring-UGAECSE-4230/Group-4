@@ -5,7 +5,7 @@ wiringpi.wiringPiSetup()
 
 # Set up square wave output for pin 7 
 wiringpi.softToneCreate(7)
-wiringpi.softToneWrite(7, 130)
+wiringpi.softToneWrite(7, 1)
 
 # Empty loop to run square wave 
 try:

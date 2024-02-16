@@ -13,9 +13,9 @@ try:
     while True:
         # Changing time interval changes frequency
         GPIO.output(7, GPIO.HIGH)
-        sleep(.0025)
+        sleep(.5)
         GPIO.output(7, GPIO.LOW)
-        sleep(.0025)
+        sleep(.5)
 
 # Reset all pins when program is ended
 except KeyboardInterrupt:

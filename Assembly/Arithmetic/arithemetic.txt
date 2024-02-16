@@ -1,0 +1,26 @@
+(gdb) b _start
+Breakpoint 1 at 0x10054
+(gdb) r
+Starting program: /home/pi/Desktop/Arithmetic/add/add 
+
+Breakpoint 1, 0x00010054 in _start ()
+(gdb) i r
+r0             0x0                 0
+r1             0x0                 0
+r2             0x0                 0
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef350          0xfffef350
+lr             0x0                 0
+pc             0x10054             0x10054 <_start>
+cpsr           0x10                16
+fpscr          0x0                 0
+(gdb) 
