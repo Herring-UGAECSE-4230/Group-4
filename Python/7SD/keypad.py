@@ -31,14 +31,23 @@ GPIO.setup(dff_pins, GPIO.OUT)
 GPIO.setup(clk, GPIO.OUT)
 
 def readKeypad(rowNum,char):
-    curVal = ""
-    GPIO.output(rowNum,GPIO.HIGH)
-    if GPIO.input(Y1)==1: curVal=char[0]
-    if GPIO.input(Y2)==1: curVal=char[1]
-    if GPIO.input(Y3)==1: curVal=char[2]
-    if GPIO.input(Y4)==1: curVal=char[3]
-    GPIO.output(rowNum,GPIO.LOW)
-    return curVal
+    if clear == False:
+        curVal = ""
+        GPIO.output(rowNum,GPIO.HIGH)
+        if GPIO.input(Y1)==1: curVal=char[0]
+        if GPIO.input(Y2)==1: curVal=char[1]
+        if GPIO.input(Y3)==1: curVal=char[2]
+        if GPIO.input(Y4)==1: curVal=char[3]
+        GPIO.output(rowNum,GPIO.LOW)
+        return curVal
+    if clear == True:
+        curVal = ""
+        GPIO.output(rowNum, GPIO.HIGH)
+        if GPIO.input(Y3) == 1:
+            curVal = char[2]
+        GPIO.output(rowNum,GPIO.LOW)
+        return curVal
+        
 
 bin_vals = {0:[1,1,1,1,1,1,0], 
             1:[0,1,1,0,0,0,0], 
@@ -63,7 +72,6 @@ def output(gpio_list, states):
 def switch(gpio):
     global clear,last
     clear = not clear
-    
     if clear == True:
         last = [GPIO.input(i) for i in dff_pins]
         print(last)
@@ -106,7 +114,7 @@ try:
             ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
             latch_value()
             sleep(.1)
-
+            
         if clear == True:
             ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
             latch_value()
