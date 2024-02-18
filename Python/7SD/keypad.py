@@ -66,6 +66,7 @@ def switch(gpio):
     
     if clear == True:
         last = [GPIO.input(i) for i in dff_pins]
+        print(last)
         output(gpio,[0,0,0,0,0,0,0,0])
 
     if clear == False:
@@ -98,12 +99,18 @@ def latch_value():
 try:
     while True:
         
-        ssd_disp(clk, readKeypad(X1, [1,2,3,'A']))
-        ssd_disp(clk, readKeypad(X2, [4,5,6,'B']))
-        ssd_disp(clk, readKeypad(X3, [7,8,9,'C']))
-        ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
-        latch_value()
-        sleep(.2)
+        if clear == False:
+            ssd_disp(clk, readKeypad(X1, [1,2,3,'A']))
+            ssd_disp(clk, readKeypad(X2, [4,5,6,'B']))
+            ssd_disp(clk, readKeypad(X3, [7,8,9,'C']))
+            ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
+            latch_value()
+            sleep(.1)
 
+        if clear == True:
+            ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
+            latch_value()
+            sleep(.1)
+            
 except KeyboardInterrupt: 
     GPIO.cleanup()
