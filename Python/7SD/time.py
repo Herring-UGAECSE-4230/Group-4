@@ -1,20 +1,22 @@
 from datetime import datetime
 
-now = datetime.now()
-hour = now.hour
-minute = now.minute
-pm = False
-if hour > 12:
-    pm = True
-    hour = hour - 12
-    
-hour = '{0:02d}'.format(hour)
-minute = '{0:02d}'.format(minute)
+def getTime():
+    now = datetime.now()
+    hour = now.hour
+    minute = now.minute
+    pm = False
+    if hour > 12:
+        pm = True
+        hour = hour - 12
+        
+    hour = '{0:02d}'.format(hour)
+    minute = '{0:02d}'.format(minute)
 
-ssd_h1 = hour[0]
-ssd_h2 = hour[1]
-ssd_m1 = minute[0]
-ssd_m2 = minute[1]
+    ssd_h1 = int(hour[0])
+    ssd_h2 = int(hour[1])
+    ssd_m1 = int(minute[0])
+    ssd_m2 = int(minute[1])
+    return [ssd_h1, ssd_h2, ssd_m1, ssd_m2, pm]
 
 
 def timeofday():
@@ -22,12 +24,6 @@ def timeofday():
         return 'PM'
     else: return 'AM'
     
-print(hour + ':' + minute + timeofday())
-print('SSD 1: ' + ssd_h1)
-print('SSD 2: ' + ssd_h2)
-print('SSD 3: ' + ssd_m1)
-print('SSD 4: ' + ssd_m2)
 
 
 
-    

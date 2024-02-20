@@ -21,11 +21,11 @@ b = 5
 a = 6
 f = 13
 g = 19
-
+invalid = 8
 clk = 26
 
 dff_pins = [a,b,c,d,e,f,g]
-GPIO.setup([X1,X2,X3,X4, dot], GPIO.OUT)
+GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
 GPIO.setup([Y1,Y2,Y3,Y4], GPIO.IN)
 GPIO.setup(dff_pins, GPIO.OUT)
 GPIO.setup(clk, GPIO.OUT)
@@ -70,39 +70,54 @@ def output(gpio_list, states):
         GPIO.output(gpio_list[i], states[i])
        
 def switch(gpio):
-    global clear,last
+    global clear,last, dots
     clear = not clear
     if clear == True:
         last = [GPIO.input(i) for i in dff_pins]
-        print(last)
-        output(gpio,[0,0,0,0,0,0,0,0])
-
+        dots = GPIO.input(dot)
+        output(gpio,[0,0,0,0,0,0,0])
+        if GPIO.input(dot) == 1:
+            GPIO.output(dot,0)
+            
     if clear == False:
         output(gpio, last)
-        
+        if dots == 1:
+            GPIO.output(dot,1)
+        if dots == 0:
+            GPIO.output(dot,0)
+            
 def ssd_disp(clk_num, value):
-    
+    GPIO.output(invalid, 0)
     try:
         value = int(value)
         output(dff_pins, bin_vals[value])
     except:
-        if value == 'A': output(dff_pins, bin_vals['A'])
-        if value == 'B': output(dff_pins, bin_vals['B'])
-        if value == 'C': output(dff_pins, bin_vals['C'])
-        if value == 'D': output(dff_pins, bin_vals['D'])
+        if value == 'A':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'B':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'C':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'D':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
         if value == '*':
             if GPIO.input(dot) == 0: GPIO.output(dot, 1)
             else: GPIO.output(dot, 0)
         if value == '#':
             switch(dff_pins)
             
-        pass
-
+        
 
 def latch_value():
     GPIO.output(clk, 1)
     sleep(0.05)
     GPIO.output(clk, 0)
+
+
 
 try:
     while True:
@@ -119,6 +134,7 @@ try:
             ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
             latch_value()
             sleep(.1)
-            
+        #switch(dff_pins)
+        
 except KeyboardInterrupt: 
     GPIO.cleanup()
