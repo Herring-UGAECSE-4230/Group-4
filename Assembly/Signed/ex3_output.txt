@@ -1,0 +1,278 @@
+Starting program: /home/pi/Group-4/Assembly/Signed/3_Loopadd_prog5_1 
+
+Breakpoint 1, 0x00010074 in _start ()
+(gdb) ni
+0x00010078 in _start ()
+(gdb) ni
+0x0001007c in _start ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200ad             131245
+r1             0xd                 13
+r2             0xd                 13
+r3             0x8                 8
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200ae             131246
+r1             0xfffffff6          4294967286
+r2             0x3                 3
+r3             0x7                 7
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200af             131247
+r1             0x13                19
+r2             0x16                22
+r3             0x6                 6
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200b0             131248
+r1             0xe                 14
+r2             0x24                36
+r3             0x5                 5
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200b1             131249
+r1             0xffffffee          4294967278
+r2             0x12                18
+r3             0x4                 4
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200b2             131250
+r1             0xfffffff7          4294967287
+r2             0x9                 9
+r3             0x3                 3
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200b3             131251
+r1             0xc                 12
+r2             0x15                21
+r3             0x2                 2
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010080 in loop ()
+(gdb) i r
+r0             0x200b4             131252
+r1             0xffffffed          4294967277
+r2             0x2                 2
+r3             0x1                 1
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10080             0x10080 <loop>
+cpsr           0x20000010          536870928
+fpscr          0x0                 0
+(gdb) ni
+0x00010084 in loop ()
+(gdb) ni
+0x00010088 in loop ()
+(gdb) ni
+0x0001008c in loop ()
+(gdb) ni
+0x00010090 in loop ()
+(gdb) ni
+0x00010094 in loop ()
+(gdb) i r
+r0             0x200b5             131253
+r1             0x10                16
+r2             0x12                18
+r3             0x0                 0
+r4             0x0                 0
+r5             0x0                 0
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10094             0x10094 <loop+20>
+cpsr           0x60000010          1610612752
+fpscr          0x0                 0
+(gdb) ni
+0x00010098 in loop ()
+(gdb) ni
+0x0001009c in loop ()
+(gdb) ni
+0x000100a0 in loop ()
+(gdb) ni
+[Inferior 1 (process 7270) exited with code 0265]

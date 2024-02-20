@@ -1,0 +1,105 @@
+Starting program: /home/pi/Group-4/Assembly/Signed/2_flagsfixed_ex5_13 
+
+Breakpoint 1, 0x00010074 in _start ()
+(gdb) ni
+0x00010078 in _start ()
+(gdb) ni
+0x0001007c in _start ()
+(gdb) ni
+0x00010080 in _start ()
+(gdb) ni
+0x00010084 in _start ()
+(gdb) ni
+0x00010088 in _start ()
+(gdb) ni
+0x0001008c in _start ()
+(gdb) i r
+r0             0x0                 0
+r1             0x200b4             131252
+r2             0x200b5             131253
+r3             0x200b6             131254
+r4             0x17e               382
+r5             0xfe                254
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x1008c             0x1008c <_start+24>
+cpsr           0x10                16
+fpscr          0x0                 0
+(gdb) ni
+0x00010090 in _start ()
+(gdb) ni
+0x00010094 in _start ()
+(gdb) i r
+r0             0x0                 0
+r1             0x200b4             131252
+r2             0x200b5             131253
+r3             0x200b6             131254
+r4             0xffffff80          4294967168
+r5             0xfe                254
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10094             0x10094 <_start+32>
+cpsr           0x10                16
+fpscr          0x0                 0
+(gdb) ni
+0x00010098 in _start ()
+(gdb) i r
+r0             0x0                 0
+r1             0x200b4             131252
+r2             0x200b5             131253
+r3             0x200b6             131254
+r4             0xffffff80          4294967168
+r5             0xfffffffe          4294967294
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x10098             0x10098 <_start+36>
+cpsr           0x10                16
+fpscr          0x0                 0
+(gdb) ni
+0x0001009c in _start ()
+(gdb) i r
+r0             0x0                 0
+r1             0x200b4             131252
+r2             0x200b5             131253
+r3             0x200b6             131254
+r4             0xffffff7e          4294967166
+r5             0xfffffffe          4294967294
+r6             0x0                 0
+r7             0x0                 0
+r8             0x0                 0
+r9             0x0                 0
+r10            0x0                 0
+r11            0x0                 0
+r12            0x0                 0
+sp             0xfffef170          0xfffef170
+lr             0x0                 0
+pc             0x1009c             0x1009c <_start+40>
+cpsr           0xa0000010          -1610612720
+fpscr          0x0                 0
+(gdb) ni
+0x000100a0 in _start ()
+(gdb) ni
+0x000100a4 in _start ()
+(gdb) ni
+[Inferior 1 (process 5408) exited normally]

@@ -27,12 +27,11 @@ clk2 = 7
 clk3 = 9
 clk4 = 10
 
-clk = [clk1, clk2, clk3, clk4]
 dff_pins = [a,b,c,d,e,f,g]
 GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
 GPIO.setup([Y1,Y2,Y3,Y4], GPIO.IN)
 GPIO.setup(dff_pins, GPIO.OUT)
-GPIO.setup([clk1, clk2, clk3, clk4], GPIO.OUT)
+GPIO.setup([clk1,clk2,clk3, clk4], GPIO.OUT)
 
 def readKeypad(rowNum,char):
     if clear == False:
@@ -91,55 +90,61 @@ def switch(gpio):
             GPIO.output(dot,0)
             
 def ssd_disp(clk_num, value):
-        GPIO.output(invalid, 0)
-        try:
-            value = int(value)
-            output(dff_pins, bin_vals[value])
-        except:
-            if value == 'A':
-                GPIO.output(invalid, 1)
-                sleep(0.7)
-            if value == 'B':
-                GPIO.output(invalid, 1)
-                sleep(0.7)
-            if value == 'C':
-                GPIO.output(invalid, 1)
-                sleep(0.7)
-            if value == 'D':
-                GPIO.output(invalid, 1)
-                sleep(0.7)
-            if value == '*':
-                if GPIO.input(dot) == 0: GPIO.output(dot, 1)
-                else: GPIO.output(dot, 0)
-            if value == '#':
-                switch(dff_pins)
+    
+    GPIO.output(invalid, 0)
+    try:
+        value = int(value)
+        output(dff_pins, bin_vals[value])
+    except:
+        if value == 'A':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'B':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'C':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == 'D':
+            GPIO.output(invalid, 1)
+            sleep(0.7)
+        if value == '*':
+            if GPIO.input(dot) == 0: GPIO.output(dot, 1)
+            else: GPIO.output(dot, 0)
+        if value == '#':
+            switch(dff_pins)
             
         
 
-def latch_value():
-    GPIO.output(clk, 1)
+def latch_value(clk_num):
+    GPIO.output(clk_num, 1)
     sleep(0.05)
-    GPIO.output(clk, 0)
+    GPIO.output(clk_num, 0)
 
+def ssdLoop(clk_num):
+    if clear == False:
+            ssd_disp(clk_num, readKeypad(X1, [1,2,3,'A']))
+            ssd_disp(clk_num, readKeypad(X2, [4,5,6,'B']))
+            ssd_disp(clk_num, readKeypad(X3, [7,8,9,'C']))
+            ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
+            latch_value(clk_num)
+            sleep(.1)
+            
+    if clear == True:
+        ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
+        latch_value(clk_num)
+        sleep(.1)
 
 
 try:
     while True:
         
-        if clear == False:
-            ssd_disp(clk1, readKeypad(X1, [1,2,3,'A']))
-            ssd_disp(clk1, readKeypad(X2, [4,5,6,'B']))
-            ssd_disp(clk1, readKeypad(X3, [7,8,9,'C']))
-            ssd_disp(clk1, readKeypad(X4, ['*',0,'#','D']))
-            latch_value()
-            sleep(.1)
-            
-        if clear == True:
-            ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
-            latch_value()
-            sleep(.1)
+        ssdLoop(clk1)
+        ssdLoop(clk2)
+        ssdLoop(clk3)
+        ssdLoop(clk4)
+        
         #switch(dff_pins)
         
 except KeyboardInterrupt: 
     GPIO.cleanup()
-
