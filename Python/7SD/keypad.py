@@ -127,10 +127,10 @@ try:
     while True:
         
         if clear == False:
-            ssd_disp(clk1, readKeypad(X1, [1,2,3,'A']))
-            ssd_disp(clk1, readKeypad(X2, [4,5,6,'B']))
-            ssd_disp(clk1, readKeypad(X3, [7,8,9,'C']))
-            ssd_disp(clk1, readKeypad(X4, ['*',0,'#','D']))
+            ssd_disp(clk, readKeypad(X1, [1,2,3,'A']))
+            ssd_disp(clk, readKeypad(X2, [4,5,6,'B']))
+            ssd_disp(clk, readKeypad(X3, [7,8,9,'C']))
+            ssd_disp(clk, readKeypad(X4, ['*',0,'#','D']))
             latch_value()
             sleep(.1)
             
