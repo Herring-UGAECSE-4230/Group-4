@@ -1,0 +1,5 @@
+git fsck --full --unreachable --no-reflogs | grep commit | cut -d ' ' -f3 | xargs git log --merges --no-walk --grep='^$' --format="%H %p"
+
+
+git reflog expire --expire=now --all
+git gc --prune=now
