@@ -3,3 +3,11 @@ git fsck --full --unreachable --no-reflogs | grep commit | cut -d ' ' -f3 | xarg
 
 git reflog expire --expire=now --all
 git gc --prune=now
+
+pi@raspberrypi:~ $ cd Group-4/
+pi@raspberrypi:~/Group-4 $ git status
+error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
+error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
+error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
+fatal: loose object b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62 (stored in .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62) is corrupt
+pi@raspberrypi:~/Group-4 $ 
