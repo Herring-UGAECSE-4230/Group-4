@@ -105,7 +105,7 @@ def switch(clk_num, gpio):
     latch_value(clk_num)
             
 def ssd_disp(clk_num, value):
-    global clock, setssd, counter, number, toggle, bcount,clear
+    global clock, setssd, counter, number, toggle, bcount, clear
     
     try:
         
@@ -123,7 +123,12 @@ def ssd_disp(clk_num, value):
             sleep(.1)
             GPIO.output(invalid, 0)
             bcount += 1
-            
+            if bcount == 1:
+                manualset()
+            if bcount == 3:
+                for x in range(4): 
+                    ssd_disp(clock[x], 0)
+                    counter = 1   
         if value == 'C':
             GPIO.output(invalid, 1)
             
@@ -195,11 +200,12 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock
+    global counter, clock, last
     counter = 0
     while counter != 4:
-        switch(dff_pins) #this makes each SSD flash until a value is input
+        switch(clock[counter], dff_pins) #this makes each SSD flash until a value is input
         if counter == 0:
+            print("bruh")
             ssdLoop(clk1)
             sleep(.2)
             last1 = [GPIO.input(i) for i in dff_pins]
@@ -219,7 +225,7 @@ def manualset():
             sleep(.2)
             pin4 = dff_pins
             last4 = [GPIO.input(i) for i in dff_pins]
-    
+        print("thinkign")
     while counter >= 4:
         last_dff = [last1,last2,last3,last4]
         pin_dff = [pin1,pin2,pin3,pin4]
@@ -251,11 +257,8 @@ try:
             ssdLoop(clk5)
             if clear == False:
                 auto()
-            if bcount == 3:
-                for x in range(4): 
-                    ssd_disp(clock[x], 0)
-                    counter = 1   
            
                 
 except KeyboardInterrupt: 
     GPIO.cleanup()
+
