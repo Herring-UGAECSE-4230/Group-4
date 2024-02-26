@@ -32,12 +32,8 @@ counter = 0
 number = 0
 bcount = 0
 
-toggle = False
 clear = False
-set1 = False
-set2 = False
-set3 = False
-set4 = False
+
 
 clock = [clk1,clk2,clk3,clk4]
 dff_pins = [a,b,c,d,e,f,g]
@@ -105,7 +101,7 @@ def switch(clk_num, gpio):
     latch_value(clk_num)
             
 def ssd_disp(clk_num, value):
-    global clock, setssd, counter, number, toggle, bcount, clear
+    global clock, setssd, counter, number, last, bcount, clear, dots
     
     try:
         
@@ -117,13 +113,15 @@ def ssd_disp(clk_num, value):
     except:
         if value == 'A':
             GPIO.output(invalid, 1)
-            counter = -1
+            counter = -200
         if value == 'B':
             GPIO.output(invalid, 1)
             sleep(.1)
             GPIO.output(invalid, 0)
             bcount += 1
             if bcount == 1:
+                last = [GPIO.input(i) for i in dff_pins]
+                dots = GPIO.input(dot)
                 manualset()
             if bcount == 3:
                 for x in range(4): 
@@ -163,7 +161,6 @@ def ssdLoop(clk_num):
         ssd_disp(clk_num, readKeypad(X3, [7,8,9,'C']))
         ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
         sleep(.1)
-        
     if clear == True:
         ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
         sleep(.1)
@@ -200,7 +197,7 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock, last
+    global counter, clock, last, toggle
     counter = 0
     while counter != 4:
         switch(clock[counter], dff_pins) #this makes each SSD flash until a value is input
@@ -230,15 +227,15 @@ def manualset():
         last_dff = [last1,last2,last3,last4]
         pin_dff = [pin1,pin2,pin3,pin4]
         ssdLoop(clk5) 
-        if toggle == False:
-            for x in range(4):
-                output(pin_dff[x], last_dff[x])
-                ssdLoop(clock[x])
-        if toggle == True:
-            for x in range(4):
-                output(pin_dff[x], [0,0,0,0,0,0,0,0])
-                ssdLoop(clock[x])
-
+#         if toggle == False:
+#             for x in range(4):
+#                 output(pin_dff[x], last_dff[x])
+#                 ssdLoop(clock[x])
+#         if toggle == True:
+#             for x in range(4):
+#                 output(pin_dff[x], [0,0,0,0,0,0,0,0])
+#                 ssdLoop(clock[x])
+# 
 current_time = datetime.now()
 curr = getTime(current_time)
 
@@ -247,17 +244,16 @@ counter = 1
 
 try:
     while True:
-        while counter == 1:
-            ssdLoop(clk1)
-            ssdLoop(clk2)
-            ssdLoop(clk3)
-            ssdLoop(clk4)
-            
-        while counter == -1 :
+        ssdLoop(clk1)
+        ssdLoop(clk2)
+        ssdLoop(clk3)
+        ssdLoop(clk4)
+        print(counter)
+        while counter <= -1:
             ssdLoop(clk5)
             if clear == False:
                 auto()
-           
+            print("bruh222")
                 
 except KeyboardInterrupt: 
     GPIO.cleanup()
