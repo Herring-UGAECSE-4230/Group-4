@@ -4,10 +4,42 @@ git fsck --full --unreachable --no-reflogs | grep commit | cut -d ' ' -f3 | xarg
 git reflog expire --expire=now --all
 git gc --prune=now
 
-pi@raspberrypi:~ $ cd Group-4/
-pi@raspberrypi:~/Group-4 $ git status
-error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
-error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
-error: object file .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62 is empty
-fatal: loose object b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62 (stored in .git/objects/b0/a7e2bf70b59f913ac1d2ecdec40cef90a67c62) is corrupt
-pi@raspberrypi:~/Group-4 $ 
+pi@raspberrypi:~/Group-4 $ git fsck --full
+error: object file .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9 is empty
+error: unable to mmap .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9: No such file or directory
+error: 39ec869032e3cb758f575fae17e9e1dc7ddf22f9: object corrupt or missing: .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9
+error: object file .git/objects/82/1e29831d632981823aa9406078d63020a4a2de is empty
+error: unable to mmap .git/objects/82/1e29831d632981823aa9406078d63020a4a2de: No such file or directory
+error: 821e29831d632981823aa9406078d63020a4a2de: object corrupt or missing: .git/objects/82/1e29831d632981823aa9406078d63020a4a2de
+error: object file .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc is empty
+error: unable to mmap .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc: No such file or directory
+error: e4a128673a3b9bbda7f31b14c14401f5268223bc: object corrupt or missing: .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc
+Checking object directories: 100% (256/256), done.
+Checking objects: 100% (117/117), done.
+error: refs/heads/main: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: refs/remotes/origin/HEAD: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: refs/remotes/origin/main: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: HEAD: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+notice: No default references
+error: object file .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9 is empty
+error: object file .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9 is empty
+fatal: loose object 39ec869032e3cb758f575fae17e9e1dc7ddf22f9 (stored in .git/objects/39/ec869032e3cb758f575fae17e9e1dc7ddf22f9) is corrupt
+pi@raspberrypi:~/Group-4 $ cd .git/objects/39/
+pi@raspberrypi:~/Group-4/.git/objects/39 $ rm ec869032e3cb758f575fae17e9e1dc7ddf22f9 
+rm: remove write-protected regular empty file 'ec869032e3cb758f575fae17e9e1dc7ddf22f9'? y
+pi@raspberrypi:~/Group-4/.git/objects/39 $ cd ../../..
+pi@raspberrypi:~/Group-4 $ git fsck --full
+error: object file .git/objects/82/1e29831d632981823aa9406078d63020a4a2de is empty
+error: unable to mmap .git/objects/82/1e29831d632981823aa9406078d63020a4a2de: No such file or directory
+error: 821e29831d632981823aa9406078d63020a4a2de: object corrupt or missing: .git/objects/82/1e29831d632981823aa9406078d63020a4a2de
+error: object file .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc is empty
+error: unable to mmap .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc: No such file or directory
+error: e4a128673a3b9bbda7f31b14c14401f5268223bc: object corrupt or missing: .git/objects/e4/a128673a3b9bbda7f31b14c14401f5268223bc
+Checking object directories: 100% (256/256), done.
+Checking objects: 100% (117/117), done.
+error: refs/heads/main: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: refs/remotes/origin/HEAD: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: refs/remotes/origin/main: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+error: HEAD: invalid sha1 pointer b0a7e2bf70b59f913ac1d2ecdec40cef90a67c62
+notice: No default references
+error: 39ec869032e3cb758f575fae17e9e1dc7ddf22f9: invalid sha1 pointer in cache-tree
