@@ -34,6 +34,7 @@ bcount = 0
 
 clear = False
 auto_time = False
+manual_time = False
 toggle = False
 free_mode = True
 home = False
@@ -103,7 +104,7 @@ def switch(clk_num, gpio):
     latch_value(clk_num)       
 def ssd_disp(clk_num, value):
     global clock, setssd, counter, last, bcount
-    global clear, dots, auto_time, toggle, free_mode
+    global clear, dots, auto_time, toggle, free_mode, manual_time
     try:
         
         value = int(value)
@@ -117,6 +118,8 @@ def ssd_disp(clk_num, value):
             if counter >= 4:
                 auto_time = True
                 free_mode = False
+                manual_time = False
+                print("fnally here")
         if value == 'B':
             GPIO.output(invalid, 1)
             sleep(.1)
@@ -126,13 +129,17 @@ def ssd_disp(clk_num, value):
                 last = [GPIO.input(i) for i in dff_pins]
                 dots = GPIO.input(dot)
                 auto_time = False
+                free_mode = False
                 manualset()
             if bcount == 3:
+                auto_time = False
+                manual_time = False
+                free_mode = True
+                counter = -5 
+                bcount = 0
                 for x in range(4): 
                     ssd_disp(clock[x], 0)
-                auto_time = False
-                counter = -1 
-                bcount = 0
+                print("bcount3")
                 
         if value == 'C':
             GPIO.output(invalid, 1)
@@ -205,7 +212,7 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock, last, toggle, clear, last
+    global counter, clock, last, toggle, clear, last, manual_time
     counter = 0
     while counter < 4 and counter >= 0:
         clear = not clear
@@ -215,6 +222,7 @@ def manualset():
             sleep(.1)
             last1 = [GPIO.input(i) for i in dff_pins]
             pin1 = dff_pins
+            
         if counter == 1:
             ssdLoop(clk2)
             sleep(.1)
@@ -230,10 +238,11 @@ def manualset():
             sleep(.1)
             pin4 = dff_pins
             last4 = [GPIO.input(i) for i in dff_pins]
-    while counter >= 4:
+            manual_time = True
+            print("dude why")
+    while manual_time == True:
         last_dff = [last1,last2,last3,last4]
         pin_dff = [pin1,pin2,pin3,pin4]
-        ssdLoop(clk5)
         if toggle == False:
             for x in range(4):
                 output(pin_dff[x], last_dff[x])
@@ -242,7 +251,8 @@ def manualset():
             for x in range(4):
                 output(pin_dff[x], [0,0,0,0,0,0,0,0])
                 ssdLoop(clock[x])
-# 
+        ssdLoop(clk5)
+        counter = 5
 current_time = datetime.now()
 curr = getTime(current_time)
 
@@ -251,21 +261,19 @@ counter = 100
 
 try:
     while True:
-    
+        
+        output(dff_pins, [1,1,1,1,1,1,0,0])
+        GPIO.output(dot,0)
         while free_mode == True:
             ssdLoop(clk1)
             ssdLoop(clk2)
             ssdLoop(clk3)
             ssdLoop(clk4)
-            
+            counter = 100
         while auto_time == True:
             ssdLoop(clk5)
             if clear == False:
                 auto()
-        while counter == -1:
-            output(dff_pins, [1,1,1,1,1,1,0,0]) #this does work yet
-            ssdLoop(clk5)
-            
+
 except KeyboardInterrupt: 
     GPIO.cleanup()
-
