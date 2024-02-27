@@ -31,8 +31,10 @@ clk5 = 11
 counter = 0
 number = 0
 bcount = 0
-keys = 0
+key1 = 0
+key2 = 0
 h2 = 0
+conc = 0 # concatenated number
 
 clear = False
 auto_time = False
@@ -223,7 +225,7 @@ def manualset():
             last1 = [GPIO.input(i) for i in dff_pins]
             pin1 = dff_pins
             keyfinderHH(last1)
-            if keys == 2:
+            if key1 == 2:
               h2 = 2          
         if counter == 1:
             ssdLoop(clk2)
@@ -250,7 +252,7 @@ def manualset():
             for x in range(4):
                 output(pin_dff[x], last_dff[x])
                 ssdLoop(clock[x])
-                print("constant")
+                
         if toggle == True:
             for x in range(4):
                 output(pin_dff[x], [0,0,0,0,0,0,0,0])
@@ -258,38 +260,37 @@ def manualset():
         ssdLoop(clk5)
         counter = 5
 
-def manual_get_time(values):
-    for key, value in bin_vals.items():
-        if value == values:
-            keys = key
-
+def manual_get_time(one,two):
+    conc = str(one) + str(two)
+    if conc > 12:
+        conc = conc - 12
 def keyfinderHH(values):
-    global keys, counter, invalid
+    global key1, counter, invalid
     for key, value in bin_vals.items():
         if value == values:
-            keys = key
-            if keys > 2:
-                GPIO.output(invalid, 1)
-                counter = 0    
+            key1 = key
+    if key1 > 2:
+        GPIO.output(invalid, 1)
+        counter = 0
+        
 def keyfinderH2(values):
-    global keys, counter, invalid, h2
+    global key2, counter, invalid, h2
     for key, value in bin_vals.items():
         if value == values:
-            keys = key
-            if h2 != 2:
-                pass
-            if h2 == 2:
-                if keys > 4:
-                    GPIO.output(invalid, 1)
-                    counter = 1  
+            key2 = key
+    if h2 == 2:
+        if key2 > 4:
+            GPIO.output(invalid, 1)
+            counter = 1
+            
 def keyfinderMM(values):
     global keys, two, counter
     for key, value in bin_vals.items():
         if value == values:
             keys = key
-            if keys > 5:
-                GPIO.output(invalid, 1)
-                counter = 2
+    if keys > 5:
+        GPIO.output(invalid, 1)
+        counter = 2
                 
 current_time = datetime.now()
 curr = getTime(current_time)
