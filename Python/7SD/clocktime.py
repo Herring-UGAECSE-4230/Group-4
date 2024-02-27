@@ -31,13 +31,14 @@ clk5 = 11
 counter = 0
 number = 0
 bcount = 0
+keys = 0
+h2 = 0
 
 clear = False
 auto_time = False
 manual_time = False
 toggle = False
 free_mode = True
-home = False
 clock = [clk1,clk2,clk3,clk4]
 dff_pins = [a,b,c,d,e,f,g]
 
@@ -79,7 +80,6 @@ bin_vals = {0:[1,1,1,1,1,1,0],
             'B':[0,0,1,1,1,1,1], 
             'C':[0,0,0,1,1,0,1], 
             'D':[0,1,1,1,1,0,1],
-            'z': [0,0,0,0,0,0,0,0]
             }
 
 def output(gpio_list, states):
@@ -212,7 +212,7 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock, last, toggle, clear, last, manual_time
+    global counter, clock, last, toggle, clear, last, manual_time, keys, h2
     counter = 0
     while counter < 4 and counter >= 0:
         clear = not clear
@@ -222,24 +222,27 @@ def manualset():
             sleep(.1)
             last1 = [GPIO.input(i) for i in dff_pins]
             pin1 = dff_pins
-            
+            keyfinderHH(last1)
+            if keys == 2:
+              h2 = 2          
         if counter == 1:
             ssdLoop(clk2)
             sleep(.1)
             last2 = [GPIO.input(i) for i in dff_pins]
             pin2 = dff_pins
+            keyfinderH2(last2)
         if counter == 2:
             ssdLoop(clk3)
             sleep(.1)
             pin3 = dff_pins
             last3 = [GPIO.input(i) for i in dff_pins]
+            keyfinderMM(last3)
         if counter == 3:
             ssdLoop(clk4)
             sleep(.1)
             pin4 = dff_pins
             last4 = [GPIO.input(i) for i in dff_pins]
             manual_time = True
-            print("dude why")
     while manual_time == True:
         last_dff = [last1,last2,last3,last4]
         pin_dff = [pin1,pin2,pin3,pin4]
@@ -247,16 +250,51 @@ def manualset():
             for x in range(4):
                 output(pin_dff[x], last_dff[x])
                 ssdLoop(clock[x])
+                print("constant")
         if toggle == True:
             for x in range(4):
                 output(pin_dff[x], [0,0,0,0,0,0,0,0])
                 ssdLoop(clock[x])
         ssdLoop(clk5)
         counter = 5
+
+def manual_get_time(values):
+    for key, value in bin_vals.items():
+        if value == values:
+            keys = key
+
+def keyfinderHH(values):
+    global keys, counter, invalid
+    for key, value in bin_vals.items():
+        if value == values:
+            keys = key
+            if keys > 2:
+                GPIO.output(invalid, 1)
+                counter = 0    
+def keyfinderH2(values):
+    global keys, counter, invalid, h2
+    for key, value in bin_vals.items():
+        if value == values:
+            keys = key
+            if h2 != 2:
+                pass
+            if h2 == 2:
+                if keys > 4:
+                    GPIO.output(invalid, 1)
+                    counter = 1  
+def keyfinderMM(values):
+    global keys, two, counter
+    for key, value in bin_vals.items():
+        if value == values:
+            keys = key
+            if keys > 5:
+                GPIO.output(invalid, 1)
+                counter = 2
+                
 current_time = datetime.now()
 curr = getTime(current_time)
 
-output(dff_pins, [1,1,1,1,1,1,0,0])
+
 counter = 100
 
 try:
@@ -277,3 +315,4 @@ try:
 
 except KeyboardInterrupt: 
     GPIO.cleanup()
+
