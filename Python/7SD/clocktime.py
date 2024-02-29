@@ -299,33 +299,14 @@ def manual_get_time():
 
 def delay():
     global key1,key2,key3,key4, last1,last2,last3,last4
-#     n = 10500000
-#     for i in range(60 * n):
-#         pass
-
     key4 += 1
-    if key4 > 9:
-        key4 = 0
-        key3 += 1
-        print("here1")
-        print(key3)
-        if key3 > 5:
-            key3 = 0
-            key2 += 1
-            print(key2)
-            print("here2")
-            if key1 > 1:
-                if key2 > 4:
-                    print("here3")
-                    print(key2)
-                    key2 = 0
-                    key1 = 0
-
-            if key1 > 0:
-                if key2 == 10:
-                    key2 = 0
-                    key1 = 2
-                    print("heref4")
+    key3 += key4 // 10
+    key4 %= 10
+    key2 += key3 // 6
+    key3 %= 6
+    key1 += key2 // 5
+    key2 %= 5
+    key1 %= 3
     last1 = bin_vals[key1]
     last2 = bin_vals[key2]
     last3 = bin_vals[key3]
