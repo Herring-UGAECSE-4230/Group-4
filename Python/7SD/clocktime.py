@@ -55,7 +55,6 @@ toggle = False
 free_mode = True
 clock = [clk1,clk2,clk3,clk4]
 dff_pins = [a,b,c,d,e,f,g]
-keys = [key1,key2,key3,key4]
 values = [value1,value2,value3,value4]
 
 GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
@@ -260,6 +259,11 @@ def manualset():
             keyfinderM2(last4)
             manual_time = True
     while manual_time == True:
+        
+        last4 = bin_vals[key4]
+        last3 = bin_vals[key3]
+        last2 = bin_vals[key2]
+        last1 = bin_vals[key1]
         last_dff = [last1,last2,last3,last4]
         if toggle == False:
             for x in range(4):
@@ -272,9 +276,6 @@ def manualset():
         ssdLoop(clk5)
         counter = 5
         delays += 1
-        print(delays)
-        print(key1)
-        print(key2)
         if delays == 3:
             delay()
             delays = 0
@@ -297,20 +298,25 @@ def manual_get_time():
     last2 = bin_vals[key2]
     concatenated = True
 
+
 def delay():
-    global key1,key2,key3,key4, last1,last2,last3,last4
-    key4 += 1
-    key3 += key4 // 10
-    key4 %= 10
-    key2 += key3 // 6
-    key3 %= 6
-    key1 += key2 // 5
-    key2 %= 5
-    key1 %= 3
-    last1 = bin_vals[key1]
-    last2 = bin_vals[key2]
-    last3 = bin_vals[key3]
-    last4 = bin_vals[key4]
+    global key1,key2,key3,key4, last1,last2,last3,last4, keys
+    
+    key4 +=1
+    if key4 > 9:
+        key4 = 0
+        key3 += 1
+        if key3 > 5:
+            key3 = 0
+            key2 += 1
+            if key2 > (9 if key1 == 0 else 2):
+                key2 = 0 if key1 == 0 else 1
+                key1 ^= 1
+    ssd_disp(clk1, key1)
+    ssd_disp(clk2, key2)
+    ssd_disp(clk3, key3)
+    ssd_disp(clk4, key4)
+    sleep(2)
 def keyfinderHH(values):
     global key1, counter, invalid, value1
     for key, value in bin_vals.items():
