@@ -282,13 +282,19 @@ def manualset():
         ssdLoop(clk5) #
         counter = 5
         delays += 1
-        for x in range(9300000):
+        for x in range(9300000): 
             pass
         if delays == 20: #value based on how long it takes to reach a minute in the loop
             delay()
             delays = 0
         elapsed = time.time() - start
         print(elapsed)
+        
+        #For the sleep method use below and comment out the for loop in line 285
+        #start = 0 #put this at the start of the while loop
+        #elapsed = time.time() - start 
+        #sleep(num) #put these too after the delays conditional
+
     while timer == True:
         time_num += 1
         if time_num == 20:
