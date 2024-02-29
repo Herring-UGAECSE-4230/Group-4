@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 from time import sleep
 from datetime import datetime
+from time import perf_counter
 
 X1 = 18
 X2 = 23
@@ -33,9 +34,20 @@ number = 0
 bcount = 0
 key1 = 0
 key2 = 0
+key3 = 0
+key4 = 0
 h2 = 0
+delays = 0
 conc = 0 # concatenated number
-
+concatenated = False
+value1 = []
+value2 = []
+value3 = []
+value4 = []
+last1 = []
+last2 = []
+last3 = []
+last4 = []
 clear = False
 auto_time = False
 manual_time = False
@@ -43,6 +55,8 @@ toggle = False
 free_mode = True
 clock = [clk1,clk2,clk3,clk4]
 dff_pins = [a,b,c,d,e,f,g]
+keys = [key1,key2,key3,key4]
+values = [value1,value2,value3,value4]
 
 GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
 GPIO.setup([Y1,Y2,Y3,Y4], GPIO.IN)
@@ -214,7 +228,8 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock, last, toggle, clear, last, manual_time, keys, h2
+    global counter, clock, toggle, clear , manual_time, key1, h2, concatenated, last1,last2, delays, keys 
+    global key2, key3, key4
     counter = 0
     while counter < 4 and counter >= 0:
         clear = not clear
@@ -223,7 +238,6 @@ def manualset():
             ssdLoop(clk1)
             sleep(.1)
             last1 = [GPIO.input(i) for i in dff_pins]
-            pin1 = dff_pins
             keyfinderHH(last1)
             if key1 == 2:
               h2 = 2          
@@ -231,67 +245,130 @@ def manualset():
             ssdLoop(clk2)
             sleep(.1)
             last2 = [GPIO.input(i) for i in dff_pins]
-            pin2 = dff_pins
             keyfinderH2(last2)
+            if concatenated == False:
+                manual_get_time()
         if counter == 2:
             ssdLoop(clk3)
             sleep(.1)
-            pin3 = dff_pins
             last3 = [GPIO.input(i) for i in dff_pins]
             keyfinderMM(last3)
         if counter == 3:
             ssdLoop(clk4)
             sleep(.1)
-            pin4 = dff_pins
             last4 = [GPIO.input(i) for i in dff_pins]
+            keyfinderM2(last4)
             manual_time = True
     while manual_time == True:
         last_dff = [last1,last2,last3,last4]
-        pin_dff = [pin1,pin2,pin3,pin4]
         if toggle == False:
             for x in range(4):
-                output(pin_dff[x], last_dff[x])
+                output(dff_pins, last_dff[x])
                 ssdLoop(clock[x])
-                
         if toggle == True:
             for x in range(4):
-                output(pin_dff[x], [0,0,0,0,0,0,0,0])
+                output(dff_pins, [0,0,0,0,0,0,0,0])
                 ssdLoop(clock[x])
         ssdLoop(clk5)
         counter = 5
-
-def manual_get_time(one,two):
-    conc = str(one) + str(two)
+        delays += 1
+        print(delays)
+        print(key1)
+        print(key2)
+        if delays == 3:
+            delay()
+            delays = 0
+def manual_get_time():
+    global key1, key2, last1,last2, concatenated, dot
+    conc = str(key1) + str(key2)
+    conc = int(conc)
     if conc > 12:
         conc = conc - 12
+        GPIO.output(dot, 1)
+    if conc < 10:
+            key1 = 0
+            key2 = conc
+    if conc >= 10:
+        key1 = str(conc)[0]
+        key2 = str(conc)[1]
+        key1 = int(key1)
+        key2 = int(key2)
+    last1 = bin_vals[key1]
+    last2 = bin_vals[key2]
+    concatenated = True
+
+def delay():
+    global key1,key2,key3,key4, last1,last2,last3,last4
+#     n = 10500000
+#     for i in range(60 * n):
+#         pass
+
+    key4 += 1
+    if key4 > 9:
+        key4 = 0
+        key3 += 1
+        print("here1")
+        print(key3)
+        if key3 > 5:
+            key3 = 0
+            key2 += 1
+            print(key2)
+            print("here2")
+            if key1 > 1:
+                if key2 > 4:
+                    print("here3")
+                    print(key2)
+                    key2 = 0
+                    key1 = 0
+
+            if key1 > 0:
+                if key2 == 10:
+                    key2 = 0
+                    key1 = 2
+                    print("heref4")
+    last1 = bin_vals[key1]
+    last2 = bin_vals[key2]
+    last3 = bin_vals[key3]
+    last4 = bin_vals[key4]
 def keyfinderHH(values):
-    global key1, counter, invalid
+    global key1, counter, invalid, value1
     for key, value in bin_vals.items():
         if value == values:
             key1 = key
+            value1 = value
     if key1 > 2:
         GPIO.output(invalid, 1)
         counter = 0
         
 def keyfinderH2(values):
-    global key2, counter, invalid, h2
+    global key2, counter, invalid, h2, value2
     for key, value in bin_vals.items():
         if value == values:
             key2 = key
+            value2 = value
     if h2 == 2:
         if key2 > 4:
             GPIO.output(invalid, 1)
             counter = 1
             
 def keyfinderMM(values):
-    global keys, two, counter
+    global key3, two, counter, value3
     for key, value in bin_vals.items():
         if value == values:
-            keys = key
-    if keys > 5:
+            key3 = key
+            value3 = value
+    if key3 > 5:
         GPIO.output(invalid, 1)
         counter = 2
-                
+
+def keyfinderM2(values):
+    global key4
+    for key, value in bin_vals.items():
+        if value == values:
+            key4 = key
+            
+    
+
 current_time = datetime.now()
 curr = getTime(current_time)
 
