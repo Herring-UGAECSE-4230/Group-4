@@ -29,8 +29,26 @@ def timeofday():
     
 print(('Current time is: {}{}:{}{}' + timeofday()).format(curr[0],curr[1],curr[2],curr[3]))
 
+
+
 # while True:
 #     getTime()
 #     timeofday()
 #     break
+import time
+
+# Define the start time
+start_time = time.time()
+
+# Set up a while loop
+i = 0
+while i < 1000000:
+    i += 1
+    # Measure the elapsed time
+    elapsed_time = time.time() - start_time
+    # Print the elapsed time within the loop
+    print("Elapsed time:", elapsed_time, "seconds")
+
+# Print the final elapsed time
+print("Final elapsed time:", elapsed_time, "seconds")
 
