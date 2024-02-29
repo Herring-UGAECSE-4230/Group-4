@@ -27,34 +27,31 @@ clk1 = 10
 clk2 = 9
 clk3 = 7
 clk4 = 26
-clk5 = 11
+clk5 = 11 #imaginary clk that is used to switch value with out changing visible clocks, love this
 
-counter = 0
+counter = 0 #used to move around the functions in the program
 number = 0
-bcount = 0
-key1 = 0
+bcount = 0 #This is for the 3 b's
+key1 = 0 #These store the value being displayed in the manual set
 key2 = 0
 key3 = 0
 key4 = 0
 h2 = 0
-delays = 0
-conc = 0 # concatenated number
-concatenated = False
-value1 = []
-value2 = []
-value3 = []
-value4 = []
-last1 = []
+delays = 0 #used to manually count to a minute in a while loop
+conc = 0 # concatenated number used to check if HH > 12
+concatenated = False #This is used so that the HH checker only goes once
+
+last1 = [] #These are the binary values for a given number, used for storing 
 last2 = []
 last3 = []
 last4 = []
-clear = False
-auto_time = False
+clear = False #For # button in the automatic time set
+auto_time = False 
 manual_time = False
-toggle = False
-free_mode = True
+toggle = False #For the # button in the manual time set
+free_mode = True #00:00 after the 3 b's
 clock = [clk1,clk2,clk3,clk4]
-dff_pins = [a,b,c,d,e,f,g]
+dff_pins = [a,b,c,d,e,f,g] #pins of flip flop
 values = [value1,value2,value3,value4]
 
 GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
@@ -72,7 +69,7 @@ def readKeypad(rowNum,char):
         if GPIO.input(Y4)==1: curVal=char[3]
         GPIO.output(rowNum,GPIO.LOW)
         return curVal
-    if clear == True:
+    if clear == True: #only reads # column after pressing # button
         curVal = ""
         GPIO.output(rowNum, GPIO.HIGH)
         if GPIO.input(Y3) == 1:
@@ -81,7 +78,7 @@ def readKeypad(rowNum,char):
         return curVal
         
 
-bin_vals = {0:[1,1,1,1,1,1,0], 
+bin_vals = {0:[1,1,1,1,1,1,0],  #flip flop pin state for each number
             1:[0,1,1,0,0,0,0], 
             2:[1,1,0,1,1,0,1], 
             3:[1,1,1,1,0,0,1], 
@@ -99,31 +96,31 @@ bin_vals = {0:[1,1,1,1,1,1,0],
 
 def output(gpio_list, states):
     for i in range(len(gpio_list)):
-        GPIO.output(gpio_list[i], states[i])
+        GPIO.output(gpio_list[i], states[i]) #makes outputing each pin way easier 
        
 def switch(clk_num, gpio):
     global clear,last, dots
     if clear == True:
-        last = [GPIO.input(i) for i in dff_pins]
-        dots = GPIO.input(dot)
+        last = [GPIO.input(i) for i in dff_pins] #if pressed, it stores the value and then changes the output to zero
+        dots = GPIO.input(dot) #store dot value
         output(gpio,[0,0,0,0,0,0,0])
         if GPIO.input(dot) == 1:
             GPIO.output(dot,0)
         
     if clear == False:
-        output(gpio, last)
+        output(gpio, last) #calls stored last value from up above
         if dots == 1:
             GPIO.output(dot,1)
         if dots == 0:
             GPIO.output(dot,0)
     latch_value(clk_num)       
-def ssd_disp(clk_num, value):
-    global clock, setssd, counter, last, bcount
+def ssd_disp(clk_num, value): #This sets the value of the ssd display based on what you input
+    global clock, setssd, counter, last, count, last1,last2,last3,last4,last_dff
     global clear, dots, auto_time, toggle, free_mode, manual_time
     try:
         
         value = int(value)
-        output(dff_pins, bin_vals[value])
+        output(dff_pins, bin_vals[value]) 
         GPIO.output(invalid, 0)
         counter += 1
         
@@ -131,20 +128,21 @@ def ssd_disp(clk_num, value):
         if value == 'A':
             GPIO.output(invalid, 1)
             if counter >= 4:
-                auto_time = True
+                auto_time = True #This is the automatic mode, setting everything else false
                 free_mode = False
                 manual_time = False
-                print("fnally here")
+                print("finally here")
         if value == 'B':
             GPIO.output(invalid, 1)
             sleep(.1)
             GPIO.output(invalid, 0)
             bcount += 1
             if bcount == 1:
-                last = [GPIO.input(i) for i in dff_pins]
+                last = [GPIO.input(i) for i in dff_pins] 
                 dots = GPIO.input(dot)
                 auto_time = False
                 free_mode = False
+                manual_time = False
                 manualset()
             if bcount == 3:
                 auto_time = False
@@ -153,12 +151,12 @@ def ssd_disp(clk_num, value):
                 counter = -5 
                 bcount = 0
                 for x in range(4): 
-                    ssd_disp(clock[x], 0)
+                    ssd_disp(clock[x], 0) #sets all clocks to zero
                 print("bcount3")
                 
         if value == 'C':
             GPIO.output(invalid, 1)
-            
+            #Supposed to be the timer
         if value == 'D':
             GPIO.output(invalid, 1)
             
@@ -173,18 +171,22 @@ def ssd_disp(clk_num, value):
             if auto_time == True:
                 for x in range(4):
                     switch(clock[x], dff_pins)
+            #if manual_time == True:
+                #for x in range(4):
+                    #switch(clock[x], dff_pins) if this works comment out the toggle
+                    #OR        
+                    #switch(clock[x], last_dff[x])
             toggle = not toggle
             
     latch_value(clk_num)
      
-def latch_value(clk_num):
+def latch_value(clk_num): #this sens the signal to the corresponding clock
     GPIO.output(clk_num, 1)
     sleep(0.05)
     GPIO.output(clk_num, 0)
     sleep(0.05)
 
-def ssdLoop(clk_num):
-    global counter
+def ssdLoop(clk_num): #this constantly scans for input from the keypad 
     if clear == False:
         ssd_disp(clk_num, readKeypad(X1, [1,2,3,'A']))
         ssd_disp(clk_num, readKeypad(X2, [4,5,6,'B']))
@@ -192,10 +194,10 @@ def ssdLoop(clk_num):
         ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
         sleep(.1)
     if clear == True:
-        ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D']))
+        ssd_disp(clk_num, readKeypad(X4, ['*',0,'#','D'])) #only reads bottom row, hence only the # button
         sleep(.1)
         
-def getTime(now=None):
+def getTime(now=None): #This gets time from the DateTime library, used in the automatic setup
     global pm
     if now is None:
         now = datetime.now()
@@ -218,8 +220,8 @@ def getTime(now=None):
 
 def auto():
     current_time = datetime.now()
-    curr = getTime(current_time)
-    ssd_disp(clk1, curr[0])
+    curr = getTime(current_time) #gets current time 
+    ssd_disp(clk1, curr[0]) #sets it to the value from the curr lis
     ssd_disp(clk2, curr[1])
     ssd_disp(clk3, curr[2])
     ssd_disp(clk4, curr[3])
@@ -227,26 +229,24 @@ def auto():
         GPIO.output(dot, 1)
     
 def manualset():
-    global counter, clock, toggle, clear , manual_time, key1, h2, concatenated, last1,last2, delays, keys 
-    global key2, key3, key4
+    global counter, clock, toggle, clear , manual_time, key1, h2, concatenated
+    global key2, key3, key4, last1,last2, delays
     counter = 0
     while counter < 4 and counter >= 0:
         clear = not clear
-        switch(clock[counter], dff_pins) #this makes each SSD flash until a value is input
-        if counter == 0:
+        switch(clock[counter], dff_pins) #this and the clear make the ssd's flash in the while loop
+        if counter == 0: #using a counter which is increased in the ssd_disp function to move on to each ssd setup
             ssdLoop(clk1)
             sleep(.1)
             last1 = [GPIO.input(i) for i in dff_pins]
-            keyfinderHH(last1)
-            if key1 == 2:
-              h2 = 2          
+            keyfinderHH(last1) #gets the key from bin_vals dictionary, repeated for ssd's       
         if counter == 1:
             ssdLoop(clk2)
             sleep(.1)
             last2 = [GPIO.input(i) for i in dff_pins]
             keyfinderH2(last2)
             if concatenated == False:
-                manual_get_time()
+                manual_get_time() #concatenates the two keys and checks to convert it to 12-hour
         if counter == 2:
             ssdLoop(clk3)
             sleep(.1)
@@ -257,10 +257,9 @@ def manualset():
             sleep(.1)
             last4 = [GPIO.input(i) for i in dff_pins]
             keyfinderM2(last4)
-            manual_time = True
+            manual_time = True 
     while manual_time == True:
-        
-        last4 = bin_vals[key4]
+        last4 = bin_vals[key4] #stores key value after time changes in delay function 
         last3 = bin_vals[key3]
         last2 = bin_vals[key2]
         last1 = bin_vals[key1]
@@ -273,15 +272,15 @@ def manualset():
             for x in range(4):
                 output(dff_pins, [0,0,0,0,0,0,0,0])
                 ssdLoop(clock[x])
-        ssdLoop(clk5)
+        ssdLoop(clk5) #
         counter = 5
         delays += 1
-        if delays == 3:
+        if delays == 3: #value based on how long it takes to reach a minute in the loop
             delay()
             delays = 0
 def manual_get_time():
     global key1, key2, last1,last2, concatenated, dot
-    conc = str(key1) + str(key2)
+    conc = str(key1) + str(key2) #grabs two keys from manual function and compares to 12, then changes and stores accordingly
     conc = int(conc)
     if conc > 12:
         conc = conc - 12
@@ -299,11 +298,11 @@ def manual_get_time():
     concatenated = True
 
 
-def delay():
-    global key1,key2,key3,key4, last1,last2,last3,last4, keys
-    
+def delay(): #function used to add a minute to the clock
+    global key1,key2,key3,key4
+    global  last1,last2,last3,last4
     key4 +=1
-    if key4 > 9:
+    if key4 > 9: #This nested if statement executes fully at the end of an hour, say 11:59
         key4 = 0
         key3 += 1
         if key3 > 5:
@@ -311,14 +310,14 @@ def delay():
             key2 += 1
             if key2 > (9 if key1 == 0 else 2):
                 key2 = 0 if key1 == 0 else 1
-                key1 ^= 1
+                key1 ^= 1 #Toggles key1 between 0 and 1
     ssd_disp(clk1, key1)
     ssd_disp(clk2, key2)
     ssd_disp(clk3, key3)
     ssd_disp(clk4, key4)
-    sleep(2)
+    
 def keyfinderHH(values):
-    global key1, counter, invalid, value1
+    global key1, counter, invalid, value1 #finds the key to from the value in the bin_vals dictionary
     for key, value in bin_vals.items():
         if value == values:
             key1 = key
@@ -333,18 +332,18 @@ def keyfinderH2(values):
         if value == values:
             key2 = key
             value2 = value
-    if h2 == 2:
+    if key1 > 1: #checks if the first of HH is a 2 so that the next value cannot be more than 4 
         if key2 > 4:
             GPIO.output(invalid, 1)
             counter = 1
             
 def keyfinderMM(values):
     global key3, two, counter, value3
-    for key, value in bin_vals.items():
+    for key, value in bin_vals.items(): 
         if value == values:
             key3 = key
             value3 = value
-    if key3 > 5:
+    if key3 > 5: #same as above but with 5
         GPIO.output(invalid, 1)
         counter = 2
 
@@ -358,21 +357,20 @@ def keyfinderM2(values):
 
 current_time = datetime.now()
 curr = getTime(current_time)
-
-
+output(dff_pins, [1,1,1,1,1,1,0,0])
+GPIO.output(dot,0)
 counter = 100
 
 try:
     while True:
-        
-        output(dff_pins, [1,1,1,1,1,1,0,0])
-        GPIO.output(dot,0)
+
         while free_mode == True:
             ssdLoop(clk1)
             ssdLoop(clk2)
             ssdLoop(clk3)
             ssdLoop(clk4)
             counter = 100
+            
         while auto_time == True:
             ssdLoop(clk5)
             if clear == False:
@@ -380,4 +378,3 @@ try:
 
 except KeyboardInterrupt: 
     GPIO.cleanup()
-
