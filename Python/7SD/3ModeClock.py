@@ -291,7 +291,7 @@ def manualset():
         print(elapsed)
         
         #For the sleep method use below and comment out the for loop in line 285
-        #start = 0 #put this at the start of the while loop
+        #start = time.time() #put this at the start of the while loop
         #elapsed = time.time() - start 
         #sleep(num) #put these too after the delays conditional
 
