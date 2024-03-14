@@ -65,5 +65,5 @@ while True:
             direction = '' #all these reset variables
             turns = 0
             last = now
-  #deliverable says pulses? counted 20 turns 
+  #deliverable says pulses? counted 20 turns
   
