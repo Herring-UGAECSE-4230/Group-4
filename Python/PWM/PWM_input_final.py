@@ -9,6 +9,7 @@ sw = 17
 
 counter = 0
 state = ''
+turns = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(clk,GPIO.IN,pull_up_down=GPIO.PUD_UP)
@@ -50,8 +51,13 @@ my_rotary.setup_switch(
 while True:
     
     state = ''
-    sleep(.2)
+    sleep(.1)
     print(counter,state) #prints cw or ccw whenever turning
+    
+    if state != '':
+        turns += 1
+    if state == '':
+        print(turns)
     
   #deliverable says pulses? counted 20 turns 
   
