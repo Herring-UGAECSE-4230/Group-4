@@ -51,7 +51,7 @@ while True:
     
     state = ''
     time.sleep(.05)
-    
+    print(state)
     if state != '':
         turns += 1
         direction = state #stores state for print
@@ -61,7 +61,7 @@ while True:
         diff = now - last 
         if diff > 0:
             tps = turns / diff
-            print(counter,"Turns per second:", tps, direction) #prints cw or ccw when turning
+            #print(counter,"Turns per second:", tps, direction) #prints cw or ccw when turning
             direction = '' #all these reset variables
             turns = 0
             last = now
