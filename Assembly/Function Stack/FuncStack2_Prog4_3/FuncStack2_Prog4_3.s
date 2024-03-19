@@ -3,17 +3,18 @@
 @ Deliverable 3: Describe the function of the .space 40 directive.
 @ Deliverable 4: Why is #4 added to the registers in the program?
 
-
-
 	.data	
 a: .space 40
 b: .space 40
 
+
 	.text
 	@ ----------------block fill subroutine
+
 fill:	ldr  	r1, =a	@ r1 = ram address pointer
 	mov	r0, #10	 	@ counter
 	ldr	r2, =0x55555555
+	
 l1:	str	r2, [r1]	@ send it to ram
 	add	r1, r1, #4	@ r1 = r1 + 4 to increment pointer
 	subs	r0, r0, #1	@ r0 = r0 - 1 to decrement counter 

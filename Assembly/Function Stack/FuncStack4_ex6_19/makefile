@@ -11,10 +11,10 @@ DEBUGFLGS =
 endif
 
 %.o : %.s
-	as $(DEBUGFLGS) $< -o $@
+		as $(DEBUGFLGS) $< -o $@
 
 ${PROG}: $(OBJS)
-	ld -o ${PROG} $(OBJS)
+		ld -o ${PROG} $(OBJS)
 
 clean: $(OBJS)
-	rm *.o ${PROG}
+		rm *.o ${PROG}
