@@ -3,7 +3,6 @@
 @ Deliverable 3: What is the value of R0, R1, and R2 after the program runs?
 @ Deliverable 4: Replace the stmdb and ldmia instructions in myFunc with the appropriate (least number) of push and pop instructions.  Show your code.
 
-
 	.text
 	.global _start
 _start: ldr  	r0, =0x125	@ r0 = 0x125
@@ -18,7 +17,7 @@ _start: ldr  	r0, =0x125	@ r0 = 0x125
 
 myFunc:
 	@ --------save r0, r1, and r2 on stack before they are used by a loop	
-	stmdb   r13!, {r0, r1, r2}
+	push {r0, r1, r2}
 
 	@ --------r0, r1, and r2 are changed
 	mov  	r0, #0	 	@ r0=0
@@ -26,6 +25,6 @@ myFunc:
 	mov  	r2, #0	 	@ r2=0
 
 	@ ---------restore the original registers contents from stack
-	ldmia   r13!, {r0, r1, r2}
+	pop {r0, r1, r2}
 
 	bx	lr 		@ return to caller

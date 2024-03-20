@@ -7,13 +7,19 @@
 	.text
 	.global _start	
 _start:
-
+	mov r6 , #5
 again:	mov	r2, #0x55	@ r2 = 0x55
-	bl	delay  	@ call delay (r14 = pc of next instruction)
+	bl	delay  		@ call delay (r14 = pc of next instruction)
 	mov	r2, #0xaa	@ r2 = 0xaa
-	bl	delay  	@ call delay 
-	b	again   	@ keep doing it
+	bl	delay  		@ call delay 
+	bne	again   	@ changed so it branches if not equal
 
+breakpoint:
+	sub r6, r6, #1
+	cmp r6, #0
+	bne again
+
+breakpoint2:
 	mov r7, #1
 	svc	0
 

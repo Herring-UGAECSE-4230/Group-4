@@ -17,9 +17,7 @@ _start:
 
 myFunc:
 	@ save r0, r1, and r2 on stack before they are used
-	str	r0, [r13, #-4]!	@ save r0 on stack
-	str	r1, [r13, #-4]!	@ save r1 on stack
-	str	r2, [r13, #-4]!	@ save r2 on stack
+	push {r0,r1,r2} @saves to stack
     
 	@ -------- modify r0, r1, and r2
 	mov	r0, #0	@ r0 = 0
@@ -27,6 +25,9 @@ myFunc:
 	mov	r2, #0	@ r2 = 0
 	@ --------
     
+	pop {r2,r1,r0}
+	bx lr
+
 	@ restore the original registers contents from stack
 	ldr	r2, [r13], #4	@ restore r2 from stack
 	ldr	r1, [r13], #4	@ restore r1 from stack
