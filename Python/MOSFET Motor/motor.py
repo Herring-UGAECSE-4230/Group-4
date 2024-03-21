@@ -2,16 +2,19 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 GPIO.setmode(GPIO.BCM)
-motor = 19
+motor = 12
+ir = 13
 GPIO.setup(motor, GPIO.OUT)
-pwm = GPIO.PWM(motor, 100)
+pwm = GPIO.PWM(motor, 500)
 
-while True:
-    try:
-        pwm.start(100)
-    except KeyboardInterrupt:
-        pwm.stop()
-        GPIO.cleanup()
+
+try:
+    pwm.start(50)
+    while True:
+        pass
+except KeyboardInterrupt:
+    pwm.stop()
+    GPIO.cleanup()
 # #
 
 

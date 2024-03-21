@@ -6,7 +6,8 @@ import time
 clk = 22
 dt = 27
 sw = 17
-
+motor = 12
+ir = 13
 counter = 0
 turns = 0 #for turns per second
 state = '' #shows either clock wise or ccw 
@@ -17,6 +18,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(clk,GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(dt,GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(sw,GPIO.IN)
+GPIO.setup(motor, GPIO.OUT)
+pwm = GPIO.PWM(motor, 500)
 
 def acw(self): #anti clock wise
     global counter, state
