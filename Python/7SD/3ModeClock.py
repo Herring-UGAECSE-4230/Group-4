@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO 
-GPIO.setmode(GPIO.BCM)
 import time
 from time import sleep
 from datetime import datetime
@@ -59,7 +58,7 @@ last4 = []
 clock = [clk1,clk2,clk3,clk4]
 dff_pins = [a,b,c,d,e,f,g] #pins of flip flop
 
-
+GPIO.setmode(GPIO.BCM)
 GPIO.setup([X1,X2,X3,X4, dot, invalid], GPIO.OUT)
 GPIO.setup([Y1,Y2,Y3,Y4], GPIO.IN)
 GPIO.setup(dff_pins, GPIO.OUT)
@@ -165,7 +164,7 @@ def ssd_disp(clk_num, value): #This sets the value of the ssd display based on w
         if value == 'C':
             GPIO.output(invalid, 1)
             timer = True
-            manual_set()
+            manualset()
         if value == 'D':
             GPIO.output(invalid, 1)
             
