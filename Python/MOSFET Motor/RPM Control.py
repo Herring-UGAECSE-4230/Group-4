@@ -56,7 +56,7 @@ my_rotary.setup_switch(debounce=200,long_press=True,sw_short_callback=sw_short)
 pwm = GPIO.PWM(motor, 50)
 while True:
     
-    print('IR State: ', GPIO.input(ir))
+    #print('IR State: ', GPIO.input(ir))
     if rpm_desired and pressed: 
         pwm.start(50)
     else:

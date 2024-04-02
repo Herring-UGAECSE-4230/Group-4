@@ -5,8 +5,9 @@ LED = 5
 speaker = 6
 unit_length = float(input('Enter the desired unit length in seconds: '))
 
-GPIO.setup([LED, speaker], GPIO.OUT)
+GPIO.setup([LED,speaker], GPIO.OUT)
 
+pwm = GPIO.PWM(speaker, 1000)
 # Translations from English to Morse
 mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     'f': '..-. ','g': '--. ','h': '.... ','i': '.. ','j': '.--- ','k': '-.- ',
@@ -52,9 +53,11 @@ def writeMC(filename, inputfile):
     
 # Output to LED 
 def beep(delay):
-    GPIO.output([LED, speaker], 1)
+    GPIO.output(LED, 1)
+    pwm.start(50)
     sleep(delay)
-    GPIO.output([LED, speaker], 0)
+    GPIO.output(LED, 0)
+    pwm.stop()
     sleep(0.5)
 
 # Different flashing time for dots and dashes

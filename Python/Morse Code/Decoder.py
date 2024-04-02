@@ -1,3 +1,4 @@
+#7
 from time import sleep
 import time
 import RPi.GPIO as GPIO
@@ -5,11 +6,11 @@ GPIO.setmode(GPIO.BCM)
 LED = 5
 speaker = 6
 key = 13
-unit_length = float(input('Enter the desired unit length in seconds: '))
+#unit_length = float(input('Enter the desired unit length in seconds: '))
 
 GPIO.setup([LED, speaker], GPIO.OUT)
 GPIO.setup(key, GPIO.IN)
-
+pwm = GPIO.PWM(speaker, 1000)
 # Translations from English to Morse
 mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     'f': '..-. ','g': '--. ','h': '.... ','i': '.. ','j': '.--- ','k': '-.- ',
@@ -79,26 +80,45 @@ def mcOut(filename):
             
 def keyTime():
     start = time.time()
-    while GPIO.input(key): pass
+    while GPIO.input(key):
+        GPIO.output(LED, 1)
+        pwm.start(50)
+        pass
+    GPIO.output(LED, 0)
+    pwm.stop()
     return time.time() - start
     
 avgdot = []
-try:
-     while len(avgdot) < 5:
-             press = keyTime()
-             if press > 0.0002:
-                 print("Press time: ", press)
-                 avgdot.append(press)
-                 
-             sleep(0.2)
+
+while len(avgdot) < 5:
+         press = keyTime()
+         if press > 0.0002:
+             print("Press time: ", press)
+             avgdot.append(press)
+             
+         sleep(0.2)
 #         fn = input('Enter a file to decode: ')
 #         writeMC('output.txt', fn)
 #         mcOut('output.txt')
-     dot_length = 0.5 * (avgdot[1] + avgdot[3])
-     dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
-     print('Dot length: ', dot_length)
-     print('Dash length: ', dash_length)
-except KeyboardInterrupt:
-    GPIO.cleanup()
-    
-
+dot_length = 0.5 * (avgdot[1] + avgdot[3])
+dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
+print('Dot length: ', dot_length)
+print('Dash length: ', dash_length)
+ 
+ #GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100)
+ 
+with open('mcoutput.txt', 'w') as file:
+     try:
+         while True:
+             press = keyTime()
+             if press <= dot_length and press > 0.0002:
+                 file.write('.')
+                 print('.')
+             if press >= dash_length:
+                 file.write('-')
+                 print('-')
+             #file.write(' ')
+             sleep(0.4)
+     except KeyboardInterrupt:
+         file.close()
+         GPIO.cleanup()
