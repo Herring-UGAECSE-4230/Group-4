@@ -18,7 +18,7 @@ mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     'r': '.-. ','s': '... ','t': '- ', 'u': '..- ', 'v': '...- ', 'w': '.-- ',
     'x': '-..- ', 'y': '-.-- ', 'z': '--.. ',
     '0': '----- ','1': '.---- ','2': '..--- ','3': '...-- ','4': '....- ',
-    '5': '..... ','6': '-.... ','7': '--... ','8': '---.. ','9': '----. '    }
+    '5': '..... ','6': '-.... ','7': '--... ','8': '---.. ','9': '----. ', 'attention':'-.-.-', 'over': '-.-', 'out':'-.-.'    }
 
 # Translating each character
 def translate(char):
@@ -77,10 +77,11 @@ def mcOut(filename):
     for line in lines:
         for ch in line:
             mc_inp(ch)
-            
-def keyTime():
+
+           
+def keyTime(channel):
     start = time.time()
-    while GPIO.input(key):
+    while GPIO.input(channel):
         GPIO.output(LED, 1)
         pwm.start(50)
         pass
@@ -88,37 +89,67 @@ def keyTime():
     pwm.stop()
     return time.time() - start
     
-avgdot = []
+def pauseTime():
+    start = time.time()
+    while not GPIO.input(key):
+        pass
+    return time.time() - start
 
-while len(avgdot) < 5:
-         press = keyTime()
-         if press > 0.0002:
-             print("Press time: ", press)
-             avgdot.append(press)
-             
-         sleep(0.2)
-#         fn = input('Enter a file to decode: ')
-#         writeMC('output.txt', fn)
-#         mcOut('output.txt')
-dot_length = 0.5 * (avgdot[1] + avgdot[3])
-dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
-print('Dot length: ', dot_length)
-print('Dash length: ', dash_length)
- 
- #GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100)
- 
-with open('mcoutput.txt', 'w') as file:
-     try:
-         while True:
-             press = keyTime()
-             if press <= dot_length and press > 0.0002:
-                 file.write('.')
-                 print('.')
-             if press >= dash_length:
-                 file.write('-')
-                 print('-')
-             #file.write(' ')
-             sleep(0.4)
-     except KeyboardInterrupt:
-         file.close()
-         GPIO.cleanup()
+if __name__ == '__main__':
+    avgdot = []
+
+    while len(avgdot) < 5:
+             press = keyTime(key)
+             if press > 0.0002:
+                 print("Press time: ", press)
+                 avgdot.append(press)
+                 
+             sleep(0.2)
+    #         fn = input('Enter a file to decode: ')
+    #         writeMC('output.txt', fn)
+    #         mcOut('output.txt')
+    dot_length = 0.5 * (avgdot[1] + avgdot[3])
+    dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
+    print('Dot length: ', dot_length)
+    print('Dash length: ', dash_length)
+     
+    GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100)
+    word = ''
+    decoded = ''
+    with open('mcoutput.txt', 'w') as file:
+         try:
+             while True:
+                 press = keyTime(key)
+                 pause = pauseTime()
+                 if press <= dot_length and press > 0.0002:
+                     file.write('.')
+                     print('.')
+                     word += '.'
+                 if press >= dash_length:
+                     file.write('-')
+                     print('-')
+                     word += '-'
+                 if pause >= 7 * dot_length:
+                     file.write(' | ')
+                     decoded = ''
+                     #ltr = word.split(' ')
+                     for char in word:
+                         letter = None
+                         for a, b in mc.items():
+                             if b == char:
+                                 letter = a
+                                 break
+                         if letter:
+                            decoded += letter     
+                     file.write(decoded + '\n')
+                     word = ''
+                     print('line break')
+                 if pause >= 3 * dot_length and pause < 5 * dot_length:
+                     file.write(' ')
+                     
+                     print('space')
+                     
+                 sleep(0.2)
+         except KeyboardInterrupt:
+             file.close()
+             GPIO.cleanup()
