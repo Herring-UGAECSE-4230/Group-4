@@ -96,9 +96,6 @@ def getSymbol(pressTime, avgdot, avgdash):
     if pressTime <= avgdot and pressTime > 0.0002: return '.'
     elif pressTime >= avgdash or pressTime >= 3*avgdot: return '-'
     
-
-
-
 def pauseTime():
     while GPIO.input(key):
         pass
@@ -133,42 +130,42 @@ if __name__ == '__main__':
     word = ''
     decoded = ''
     with open('mcoutput.txt', 'w') as file:
-         try:
-             while True:
-                 press = keyTime(key)
-                 pause = pauseTime()
+        try:
+            while True:
+                press = keyTime(key)
+                pause = pauseTime()
 #                  print(getSymbol(press, dot_length, dash_length))
 #                  if pause >= dash_length: print(' ')
-                 if press <= dot_length and press > 0.001:
-                     file.write('.')
-                     print('.')
-                     word += '.'
-                 if press >= dash_length:
-                     file.write('-')
-                     print('-')
-                     word += '-'
-                 if pause >= 3*dash_length:
-                     file.write(' | ')
-                     decoded = ''
-                     print(word)
-                     ltr = word.split(' ')
-                     for char in ltr:
-                         letter = None
-                         for a, b in mc.items():
-                             if b == char:
-                                 letter = a
-                                 break
-                         if letter:
+                if press <= dot_length and press > 0.001:
+                    file.write('.')
+                    print('.')
+                    word += '.'
+                if press >= dash_length:
+                    file.write('-')
+                    print('-')
+                    word += '-'
+                if pause >= 3*dash_length:
+                    file.write(' | ')
+                    decoded = ''
+                    print(word)
+                    ltr = word.split(' ')
+                    for char in ltr:
+                        letter = None
+                        for a, b in mc.items():
+                            if b == char:
+                                letter = a
+                                break
+                        if letter:
                             decoded += letter     
-                     file.write(decoded + '\n')
-                     word = ''
-                     print('line break')
-                 if pause >= dash_length and pause < 3 * dash_length:
-                     file.write(' ')
-                     
-                     print('space')
-                     
-                 sleep(0.01)
-         except KeyboardInterrupt:
-             file.close()
-             GPIO.cleanup()
+                    file.write(decoded + '\n')
+                    word = ''
+                    print('line break')
+                if pause >= dash_length and pause < 3 * dash_length:
+                    file.write(' ')
+                    
+                    print('space')
+                    
+                sleep(0.01)
+        except KeyboardInterrupt:
+            file.close()
+            GPIO.cleanup()
