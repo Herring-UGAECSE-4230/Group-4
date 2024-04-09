@@ -7,17 +7,23 @@ mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     '5': '..... ','6': '-.... ','7': '--... ','8': '---.. ','9': '----. ', 'attention':'-.-.- ', 'over': '-.- ', 'out':'-.-. '    }
 
 mc_decode = {v : k for k,v in mc.items()}
-with open('mcoutput.txt', 'w') as file:
-    word = '.- ... ... '
+# ['...-.-.-.-.-']
+# ['...-.-.-.-.- ']
+
+with open('messages.txt', 'w') as file:
+    word = '.- ... ... bruh '
+    word = '...-. -.- .-.-'
     file.write(word)
     file.write(' | ')
     word = word.split()
+    print(word)
     word = [word + ' ' for word in word]
     print(word)
     decode = [mc_decode.get(word, '?') for word in word]
     for n in decode:
         file.write(n)
     file.write(' \n')
+file.close()
         #
     #for n in word:
    #     print(word[n])
