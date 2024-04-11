@@ -160,6 +160,6 @@ if __name__ == '__main__': #keyboard interrupt
             file.close()
             GPIO.cleanup()
              
-#fn = input('Enter a file to decode: ') #automatic decoding
-#writeMC('output.txt', fn)
-#mcOut('output.txt')
+fn = input('Enter a file to decode: ') #automatic decoding
+writeMC('output.txt', fn)
+mcOut('output.txt')
