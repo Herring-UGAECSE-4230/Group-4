@@ -18,7 +18,7 @@ mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     'r': '.-. ','s': '... ','t': '- ', 'u': '..- ', 'v': '...- ', 'w': '.-- ',
     'x': '-..- ', 'y': '-.-- ', 'z': '--.. ',
     '0': '----- ','1': '.---- ','2': '..--- ','3': '...-- ','4': '....- ',
-    '5': '..... ','6': '-.... ','7': '--... ','8': '---.. ','9': '----. ', 'attention':'-.-.- ', 'over': '-.- ', 'out':'-.-. '    }
+    '5': '..... ','6': '-.... ','7': '--... ','8': '---.. ','9': '----. ', 'attention':'-.-.- ', 'over': '.-.- ', 'out':'.-.-. '    }
 
 mc_decode = {v:k for k,v in mc.items()}
 
@@ -40,7 +40,7 @@ def mcword(word):
 
 
 # Write MC output to file
-def writeMC(filename, inputfile):
+def writeMC(filename, inputfile): #automatic decoding
     with open(inputfile) as file:
         lines = [line.rstrip() for line in file.readlines()]
     f = open(filename, 'w')
@@ -64,7 +64,7 @@ def beep(delay):
     sleep(0.5)
 
 # Different flashing time for dots and dashes
-def mc_inp(char):
+def mc_inp(char): 
     if char == '-':
         beep(.5)
     elif char == '.':
@@ -73,14 +73,14 @@ def mc_inp(char):
         sleep(0.25)
         
 # Read output file and transmit MC through LED        
-def mcOut(filename):
+def mcOut(filename): #this is used for automatically decoding 
     with open(filename) as file:
         lines = [line.rstrip().lstrip().split('|')[0] for line in file.readlines()]
     for line in lines:
         for ch in line:
             mc_inp(ch)
            
-def keyTime(channel):
+def keyTime(channel): #times how long the press is
     global timer
     start = time.time()
     while GPIO.input(channel):
@@ -91,33 +91,33 @@ def keyTime(channel):
     #
     return time.time() - start
 
-def pauseTime():
+def pauseTime(): #used to time the pauses for the space in writing
     while GPIO.input(key):
         pass
+    
     start = time.time()
     while not GPIO.input(key):
         pass
 
     return time.time() - start
 
-GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100)
+GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100) #debouncing method
 
-if __name__ == '__main__':
+if __name__ == '__main__': #keyboard interrupt 
     avgdot = []
     while len(avgdot) < 5:
-        press = keyTime(key)
+        press = keyTime(key) #gets dash dot dash dot dash reference at the start
         if press > 0.001:
             print("Press time: ", press)
             avgdot.append(press)
         sleep(0.01)
     dot_length = 0.5 * (avgdot[1] + avgdot[3])
-    dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
+    dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4]) #gets the averages
     print('Dot length: ', dot_length)
     print('Dash length: ', dash_length)
     sleep(1)
     
     word = ''
-    decoded = ''
     with open('mcoutput.txt', 'w') as file:
         try:
             while True:
@@ -125,41 +125,41 @@ if __name__ == '__main__':
                 press = keyTime(key)
                 pause = pauseTime()
 
-                if press <= dot_length and press > 0.001:
+                if press <= dot_length and press > 0.001: #dot threshhold
                     file.write('.')
                     print('.')
                     word += '.'
                     
-                if press >= dash_length:
+                if press >= dash_length: #dash threshold
                     file.write('-')
                     print('-')
                     word += '-'
 
-                if pause >= 3 * dash_length:
+                if pause >= 3 * dash_length: #used for new lines
                     file.write(' | ')
                     word = word.split()
                     word = [word + ' ' for word in word]
-                    decode = [mc_decode.get(word, '?') for word in word]
+                    decode = [mc_decode.get(word, '?') for word in word] #checks flipped dictionary
                     for n in decode:
-                        file.write(n)
-                        file.write(' \n')
+                        file.write(n) 
+                    file.write(' \n')
                     print(word)
-                    if word[0] == '-.-. ':
+                    if word != [] and word[0] == '-.-. ':
                         file.close()
                     word = ''
                     print("new line")
 
-                if pause >= dash_length and pause < 3 * dash_length:
+                if pause >= dash_length and pause < 3 * dash_length: #writes the space
                     file.write(' ')
                     word += ' '
                     print('space')
                      
-                 sleep(0.01)
+                sleep(0.01)
                  
-         except KeyboardInterrupt:
-             file.close()
-             GPIO.cleanup()
+        except KeyboardInterrupt:
+            file.close()
+            GPIO.cleanup()
              
-fn = input('Enter a file to decode: ')
-writeMC('output.txt', fn)
-mcOut('output.txt')
+#fn = input('Enter a file to decode: ') #automatic decoding
+#writeMC('output.txt', fn)
+#mcOut('output.txt')
