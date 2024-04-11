@@ -1,4 +1,4 @@
-#7
+#sudo pigpiod
 from time import sleep
 import time
 import RPi.GPIO as GPIO
@@ -6,12 +6,11 @@ GPIO.setmode(GPIO.BCM)
 LED = 5
 speaker = 6
 key = 13
-timer = 0
-#unit_length = float(input('Enter the desired unit length in seconds: '))
 
-GPIO.setup([LED, speaker], GPIO.OUT)
 GPIO.setup(key, GPIO.IN)
+GPIO.setup([LED, speaker], GPIO.OUT)
 pwm = GPIO.PWM(speaker, 1000)
+
 # Translations from English to Morse
 mc = {'a': '.- ','b': '-... ', 'c': '-.-. ','d': '-.. ','e': '. ',
     'f': '..-. ','g': '--. ','h': '.... ','i': '.. ','j': '.--- ','k': '-.- ',
@@ -92,122 +91,75 @@ def keyTime(channel):
     #
     return time.time() - start
 
-def getSymbol(pressTime, avgdot, avgdash):
-    if pressTime <= avgdot and pressTime > 0.0002: return '.'
-    elif pressTime >= avgdash or pressTime >= 3*avgdot: return '-'
-<<<<<<< HEAD:Python/Morse Code/Morsecode_Decoder_Final.py
-
-
-=======
-    
->>>>>>> 25a976b797e6c1fb5f92c95c4a9dfa2d18bff408:Python/Morse Code/getSymbolDecoder.py
 def pauseTime():
     while GPIO.input(key):
         pass
-    
     start = time.time()
     while not GPIO.input(key):
         pass
 
     return time.time() - start
+
 GPIO.add_event_detect(key, GPIO.RISING, callback=keyTime, bouncetime=100)
+
 if __name__ == '__main__':
     avgdot = []
-
     while len(avgdot) < 5:
-             press = keyTime(key)
-             if press > 0.001:
-                 print("Press time: ", press)
-                 avgdot.append(press)
-                 
-             sleep(0.01)
-    #         fn = input('Enter a file to decode: ')
-    #         writeMC('output.txt', fn)
-    #         mcOut('output.txt')
+        press = keyTime(key)
+        if press > 0.001:
+            print("Press time: ", press)
+            avgdot.append(press)
+        sleep(0.01)
     dot_length = 0.5 * (avgdot[1] + avgdot[3])
     dash_length = (1/3) * (avgdot[0] + avgdot[2] + avgdot[4])
     print('Dot length: ', dot_length)
     print('Dash length: ', dash_length)
     sleep(1)
     
-    
-    
     word = ''
     decoded = ''
     with open('mcoutput.txt', 'w') as file:
         try:
             while True:
+                
                 press = keyTime(key)
                 pause = pauseTime()
-#                  print(getSymbol(press, dot_length, dash_length))
-#                  if pause >= dash_length: print(' ')
-<<<<<<< HEAD:Python/Morse Code/Morsecode_Decoder_Final.py
-                 if press <= dot_length and press > 0.001:
-                     file.write('.')
-                     print('.')
-                     word += '.'
-                 if press >= dash_length:
-                     file.write('-')
-                     print('-')
-                     word += '-'
-                 if pause >= 3*dash_length:
-                    #file.write(word)
-                    print(word)
-                    file.write(' | ')
-                    word = word.split()
-                    print(word)
-                    word = [word + ' ' for word in word]
-                    print(word)
-                    decode = [mc_decode.get(word, '?') for word in word]
-                    for n in decode:
-                        file.write(n)
-                    file.write(' \n')
-                    print("bruh", word)
-                    if word[0] == '-.-. ':
-                        file.close()
-                    word = ''
-                    print("new line")
-                 if pause >= dash_length and pause < 3 * dash_length:
-                     file.write(' ')
-                     word += ' '
-                     print('space')
-                     
-                 sleep(0.01)
-         except KeyboardInterrupt:
-             file.close()
-             GPIO.cleanup()
-=======
+
                 if press <= dot_length and press > 0.001:
                     file.write('.')
                     print('.')
                     word += '.'
+                    
                 if press >= dash_length:
                     file.write('-')
                     print('-')
                     word += '-'
-                if pause >= 3*dash_length:
+
+                if pause >= 3 * dash_length:
                     file.write(' | ')
-                    decoded = ''
+                    word = word.split()
+                    word = [word + ' ' for word in word]
+                    decode = [mc_decode.get(word, '?') for word in word]
+                    for n in decode:
+                        file.write(n)
+                        file.write(' \n')
                     print(word)
-                    ltr = word.split(' ')
-                    for char in ltr:
-                        letter = None
-                        for a, b in mc.items():
-                            if b == char:
-                                letter = a
-                                break
-                        if letter:
-                            decoded += letter     
-                    file.write(decoded + '\n')
+                    if word[0] == '-.-. ':
+                        file.close()
                     word = ''
-                    print('line break')
+                    print("new line")
+
                 if pause >= dash_length and pause < 3 * dash_length:
                     file.write(' ')
-                    
+                    word += ' '
                     print('space')
-                    
-                sleep(0.01)
-        except KeyboardInterrupt:
-            file.close()
-            GPIO.cleanup()
->>>>>>> 25a976b797e6c1fb5f92c95c4a9dfa2d18bff408:Python/Morse Code/getSymbolDecoder.py
+                     
+                 sleep(0.01)
+                 
+         except KeyboardInterrupt:
+             file.close()
+             GPIO.cleanup()
+             
+fn = input('Enter a file to decode: ')
+writeMC('output.txt', fn)
+mcOut('output.txt')
