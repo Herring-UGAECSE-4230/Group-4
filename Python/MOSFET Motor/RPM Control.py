@@ -8,110 +8,135 @@ clk = 22
 dt = 27
 sw = 17
 
-motor = 12
 ir = 16
+motor = 12
 counter = 0
-turns = 0 #for turns per second
-state = '' #shows either clock wise or ccw 
-direction = '' #stores state value 
-last = time.time() #used for tps
 pressed = 1
 
 rpm_desired = 0
-duty = 20
+duty = 0
+state = 1
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(clk,GPIO.IN)
-GPIO.setup(dt,GPIO.IN)
-GPIO.setup(sw,GPIO.IN)
+GPIO.setup([clk,dt,sw], GPIO.IN)
 GPIO.setup(ir, GPIO.IN)
 GPIO.setup(motor, GPIO.OUT)
-   
+ 
+pwm = GPIO.PWM(motor, 1)
+
 def cw(self): #clock wise
-    global counter, state, rpm_desired, duty
-    counter += 1
-    state = 'clockwise'
+    global counter, state, rpm_desired, duty, pressed
     rpm_desired += 25
     if rpm_desired > 0:
-        if duty <= 95: duty += 5
+        if duty <= 95:
+            duty += 5
         pwm.start(duty)
-    
-    print('RPM: ', rpm_desired)
+        pressed = 1
+    if rpm_desired > 500:
+        rpm_desired = 500
+    print('Expected RPM: ', rpm_desired, duty)
     
 def acw(self): #clock wise
-    global counter, state, rpm_desired, duty
-    counter -= 1
-    state = 'clockwise'
+    global state, rpm_desired, duty, pressed
     rpm_desired -= 25
-    if duty >= 5: duty -= 5
+    if duty >= 5:
+        duty -= 5
     pwm.start(duty)
+    pressed = 1
     if rpm_desired <= 0:
         pwm.stop()
+        pressed = 0
         rpm_desired = 0
-    print('RPM: ', rpm_desired, duty)
-def increment(self):
-    global counter 
-    counter += 1
-
-
-GPIO.add_event_detect(ir, GPIO.FALLING, callback=increment, bouncetime= 10)
-
-def sw_short():
+    print('Expected RPM: ', rpm_desired, duty)
+   
+def switch():
     global pressed, duty
     if pressed == 1:
-        pressed = 0
         pwm.stop()
+        pressed = 0
     
     else:
-        pressed = 1
         pwm.start(duty)
+        pressed = 1
     print("Pressed: ", pressed)
-    
 
+def increment(self):
+    global counter, state
+    if not GPIO.input(ir) and state:
+        counter += 1
+        state = 0
+    else: state = 1
+    
+def rotation():
+    global counter
+    counter = 0
+    start = time.time()
+    spinning = True
+    while spinning:
+        #print(counter)
+        if time.time() - start >= 1:
+            diff = time.time() - start
+            rpm = (counter / diff ) * 60
+            print("RPM:", rpm, counter)
+            counter = 0
+            spinning = False
+    
+    
 #sets up pins from rotary
-my_rotary = Rotary( clk_gpio=22,dt_gpio=27,sw_gpio=17)
+my_rotary = Rotary(clk_gpio=22,dt_gpio=27,sw_gpio=17)
 
 #sets up rotary callbacks, and debounces based on pigpio module
-my_rotary.setup_rotary( debounce=200, up_callback=acw, down_callback=cw)
-my_rotary.setup_switch(debounce=200,long_press=True,sw_short_callback=sw_short)
+my_rotary.setup_rotary(debounce=200, up_callback=acw, down_callback=cw)
+my_rotary.setup_switch(debounce=200,long_press=False,sw_short_callback=switch)
 
-pwm = GPIO.PWM(motor, 1)
+GPIO.add_event_detect(ir, GPIO.FALLING, callback=increment, bouncetime = 30)
 
 try:
     if rpm_desired > 0 and pressed == 1:
         pwm.start(duty)
-            
+    
     else:
         pwm.stop()
-        print("stop")
+        
     while True:
         
-        pass
-        
+        #rotation()
+        print(counter, GPIO.input(ir))
+        sleep(.5)
 except:
     pwm.stop()
     GPIO.cleanup()
-    #sleep(1)
-    
-#     
-#     state = ''
-#     time.sleep(.05)
-#     print(state)
-#     if state != '':
-#         turns += 1
-#         direction = state #stores state for print
+
+
 # 
-#     if state == '':
-#         now = time.time() 
-#         diff = now - last 
-#         if diff > 0:
-#             tps = turns / diff
-#             #print(counter,"Turns per second:", tps, direction) #prints cw or ccw when turning
-#             direction = '' #all these reset variables
-#             turns = 0
-#             last = now
-  #deliverable says pulses? counted 20 turns
-#     print('Pressed: ', pressed)
-#     print('RPM: ', rpm_desired)
-    #sleep(1)
-  
+# def increment(self):
+#     global counter, state 
+#     if not GPIO.input(ir) and state:
+#         counter += 1
+#         state = 0
+#     else: state = 1
+# 
+# last = time.time()
+# 
+# def pulse(self):
+#     global counter, last
+#     counter += 1
+#     curr = time.time()
+#     diff = curr - last
+#     last = curr
+#     
+#     if counter == 3:
+#         rpm = 60 / (3 * diff)
+#         print('Actual RPM: ', rpm)
+#         
+#         counter = 0
+#     
+# def calc():
+#     global counter
+#     
+#     start = time.time()
+#     while time.time() - start < 60:
+#         #print(counter, GPIO.input(ir))
+#         pass
+#     print('Actual RPM: ', counter / 3)
+#     counter = 0
