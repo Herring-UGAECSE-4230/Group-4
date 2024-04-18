@@ -1,10 +1,10 @@
 #sudo pigpiod 
 import time
-import pigpio
+import pigpio #needed for rpm class
 from time import sleep
 import RPi.GPIO as GPIO
 from rotary import Rotary #pigpio rotary encoder import
-from read_RPM import reader
+from read_RPM import reader #pigpio rpm import
 
 pi = pigpio.pi() #initializes pigpio
 
@@ -12,12 +12,12 @@ clk = 22 #encoder pins
 dt = 27
 sw = 17
 
-ir = 16 #ir sensor pin
+ir = 16 #infrared sensor pin
 motor = 12
 counter = 0 #counts falling edge from fan
 pressed = 1 #bool for on / off of fan
 
-rpm_desired = 0 
+rpm_desired = 0 #variable for user setting 
 duty = 0 #duty cycle 
 
 GPIO.setmode(GPIO.BCM)
@@ -38,7 +38,7 @@ def cw(self): #turning clock wise in the encoder
     if rpm_desired > 5000: 
         rpm_desired = 5000 #max rpm value 
     
-def acw(self): #counter clock wise very similar to other function
+def acw(self): #anti clock wise very similar to other function
     global rpm_desired, duty, pressed
     rpm_desired -= 250
     if duty >= 5: #limits duty cycle from being negative
@@ -64,7 +64,7 @@ def switch(): #switch function for encoder
 #sets up pins from rotary
 my_rotary = Rotary(clk_gpio=22,dt_gpio=27,sw_gpio=17) 
 
-#sets up rotary callbacks, and debounces based on pigpio Rotary class
+#sets up rotary callbacks, and debounces based on rotary class
 my_rotary.setup_rotary(debounce=200, up_callback=acw, down_callback=cw)
 my_rotary.setup_switch(debounce=200,long_press=False,sw_short_callback=switch)
 
@@ -80,10 +80,10 @@ try:
         pwm.stop()
         
     while True: #prints speed
-        speed = rotations.RPM()
+        speed = rotations.RPM() #calls RPM function
         print(" Set RPM:", rpm_desired, "\n","Actual RPM:", speed) 
         sleep(.5)
-    
+
 except:
     pwm.stop()
     GPIO.cleanup()
