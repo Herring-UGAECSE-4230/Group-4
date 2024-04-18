@@ -1,10 +1,10 @@
 #sudo pigpiod 
+import time
+import pigpio
+from time import sleep
 import RPi.GPIO as GPIO
 from rotary import Rotary #pigpio rotary encoder import
-from time import sleep
-import time
 from read_RPM import reader
-import pigpio
 
 pi = pigpio.pi() #initializes pigpio
 
