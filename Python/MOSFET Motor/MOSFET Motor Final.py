@@ -72,17 +72,16 @@ my_rotary.setup_switch(debounce=200,long_press=False,sw_short_callback=switch)
 rotations = reader(pi, gpio = ir, pulses_per_rev = 3)
 
 try:
-    
+    #adds stability for starting motor
     if rpm_desired > 0 and pressed == 1:
-        print("bruhruhruh")
         pwm.start(duty)
     
     else:
         pwm.stop()
         
-    while True:
+    while True: #prints speed
         speed = rotations.RPM()
-        print(" Set RPM:", rpm_desired, "\n","Actual RPM:", speed)
+        print(" Set RPM:", rpm_desired, "\n","Actual RPM:", speed) 
         sleep(.5)
     
 except:
