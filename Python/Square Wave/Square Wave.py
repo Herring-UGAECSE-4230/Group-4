@@ -7,7 +7,7 @@ class SquareWave: #square wave
         self.frequency = frequency
 
     def update_delay(self, new_delay_value):
-        asm_file_path = '/path/to/asm_file.s'  #pi4
+        asm_file_path = '/home/pi/Desktop/Group-4/Python/Square Wave/GPIO Off/'  #pi4
         with open(asm_file_path, 'r') as file:
             lines = [line.rstrip() for line in file.readlines()]
 
@@ -20,9 +20,9 @@ class SquareWave: #square wave
                 file.write(line + '\n')
 
     def start(self):
-        os.chdir('/path/to/directory')  #pi4 path 
+        os.chdir('/home/pi/Desktop/Group-4/Python/Square Wave/GPIO Off/')  #pi4 path 
         subprocess.Popen('make', shell=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).wait()
-        self.p1 = subprocess.Popen('./asm_file_name', shell=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        self.p1 = subprocess.Popen('GPIO_ON.s', shell=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 
     def stop(self):
         if hasattr(self, 'p1') and self.p1.poll() is None:

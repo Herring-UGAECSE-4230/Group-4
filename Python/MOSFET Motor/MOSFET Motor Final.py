@@ -25,7 +25,7 @@ GPIO.setup([clk,dt,sw], GPIO.IN)
 GPIO.setup(ir, GPIO.IN)
 GPIO.setup(motor, GPIO.OUT)
  
-pwm = GPIO.PWM(motor, 10000)
+pwm = GPIO.PWM(motor, 1)
 
 def cw(self): #turning clock wise in the encoder
     global rpm_desired, duty, pressed
@@ -42,7 +42,7 @@ def acw(self): #anti clock wise very similar to other function
     global rpm_desired, duty, pressed
     rpm_desired -= 250
     if duty >= 5: #limits duty cycle from being negative
-        duty -= 5 
+        duty -= 5
     pwm.start(duty)
     pressed = 1 #ensures pressed state is correct with motor
     if rpm_desired <= 0:
