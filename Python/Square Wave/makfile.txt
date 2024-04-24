@@ -1,4 +1,4 @@
-OBJS = GPIO_ON.o
+OBJS = GPIO_OFF.o
 ifdef DEBUG
 DEBUGFLGS = -g
 else
@@ -7,8 +7,8 @@ endif
 
 %.o : %.s
 	as $(DEBUGFLGS) $< -o $@
-GPIO_ON: $(OBJS)
-	gcc -o GPIO_ON $(OBJS)
+GPIO_OFF: $(OBJS)
+	gcc -o GPIO_OFF $(OBJS)
 
 clean:
-	rm *.o GPIO_ON
+	rm *.o GPIO_OFF
