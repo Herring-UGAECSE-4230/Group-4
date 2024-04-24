@@ -8,7 +8,7 @@
 .equ    MAKE_GPIO11_OUTPUT, 0b1000      @ use pin for ouput
 .equ    PIN, 11                         @ Used to set PIN high / low
 
-.equ    DCOUNT, 100000                  @delay counter
+.equ    DCOUNT, 10                  @delay counter
 
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor
@@ -32,6 +32,7 @@ device:
 @ The program
     .text
     .global main
+
 main:
 @ Open /dev/gpiomem for read/write and syncing
     ldr     r1, O_RDWR_O_SYNC   @ flags for accessing device
@@ -70,9 +71,9 @@ LED_ON:
     b       on_delay
 
 on_delay:
-    subs    r8, r8, #1  @decreasing counter
+    sub     r8, r8, #1      @decreasing counter
     bne     on_delay       
-    b       LED_OFF 
+    b       LED_OFF
 
 LED_OFF: 
     add     r0, r5, #GPCLR0 @ calc GPCLR0 address
@@ -85,10 +86,9 @@ LED_OFF:
     b       off_delay
 
 off_delay:
-    subs    r8, r8, #1 @decreasing counter
+    sub    r8, r8, #1       @decreasing counter
     bne     off_delay
     b       LED_ON
-
 
 GPIO_BASE:
     .word   0xfe200000  @GPIO Base address Raspberry pi 4
@@ -96,8 +96,3 @@ mem_fd:
     .word   device
 O_RDWR_O_SYNC:
     .word   2|256       @ O_RDWR (2)|O_SYNC (256).
-
-@BIT_BANG.s: Assembler messages:
-@BIT_BANG.s:69: Error: invalid constant (186a0) after fixup
-@BIT_BANG.s:84: Error: invalid constant (186a0) after fixup
-@make: *** [makefile:9: BIT_BANG.o] Error 1
