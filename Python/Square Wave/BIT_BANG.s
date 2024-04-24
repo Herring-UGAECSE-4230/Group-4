@@ -1,12 +1,14 @@
 @ mmap part taken from by https://bob.cs.sonoma.edu/IntroCompOrg-RPi/sec-gpio-mem.html
 
 @ GPOI21 Related
-.equ    GPFSEL1, 0x04   @ function register offset
-.equ    GPCLR0, 0x28    @ clear register offset
-.equ    GPSET0, 0x1c    @ set register offset
+.equ    GPFSEL1, 0x04                   @ function register offset
+.equ    GPCLR0, 0x28                    @ clear register offset
+.equ    GPSET0, 0x1c                    @ set register offset
 .equ    GPFSEL1_GPIO11_MASK, 0b111000   @ Mask for fn register
 .equ    MAKE_GPIO11_OUTPUT, 0b1000      @ use pin for ouput
 .equ    PIN, 11                         @ Used to set PIN high / low
+
+.equ    DCOUNT, 100000                  @delay counter
 
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor
@@ -59,23 +61,33 @@ main:
 
 LED_ON:
     add     r0, r5, #GPSET0 @ calc GPSET0 address
-    mov     r8, #1          @ LED is on
     mov     r3, #1          @ turn on bit
     lsl     r3, r3, #PIN    @ shift bit to pin position
     orr     r2, r2, r3      @ set bit
     str     r2, [r0]        @ update register
     
-    b LED_OFF
+    mov     r8, #DCOUNT
+    b       on_delay
+
+on_delay:
+    subs    r8, r8, #1  @decreasing counter
+    bne     on_delay       
+    b       LED_OFF 
 
 LED_OFF: 
     add     r0, r5, #GPCLR0 @ calc GPCLR0 address
-    mov     r8, #0          @ LED is off
     mov     r3, #1          @ turn off bit
     lsl     r3, r3, #PIN    @ shift bit to pin position
     orr     r2, r2, r3      @ set bit
     str     r2, [r0]        @ update register
+    
+    mov     r8, #DCOUNT
+    b       off_delay
 
-    b LED_ON
+off_delay:
+    subs    r8, r8, #1 @decreasing counter
+    bne     off_delay
+    b       LED_ON
 
 
 GPIO_BASE:
@@ -84,3 +96,8 @@ mem_fd:
     .word   device
 O_RDWR_O_SYNC:
     .word   2|256       @ O_RDWR (2)|O_SYNC (256).
+
+@BIT_BANG.s: Assembler messages:
+@BIT_BANG.s:69: Error: invalid constant (186a0) after fixup
+@BIT_BANG.s:84: Error: invalid constant (186a0) after fixup
+@make: *** [makefile:9: BIT_BANG.o] Error 1
