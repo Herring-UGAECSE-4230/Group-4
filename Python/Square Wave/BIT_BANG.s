@@ -8,7 +8,7 @@
 .equ    MAKE_GPIO11_OUTPUT, 0b1000      @ use pin for ouput
 .equ    PIN, 11                         @ Used to set PIN high / low
 
-.equ    DCOUNT, 10                  @delay counter
+.equ    DCOUNT, 10000                   @delay counter
 
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor
@@ -71,7 +71,7 @@ LED_ON:
     b       on_delay
 
 on_delay:
-    sub     r8, r8, #1      @decreasing counter
+    subs    r8, r8, #1      @decreasing counter
     bne     on_delay       
     b       LED_OFF
 
@@ -86,13 +86,15 @@ LED_OFF:
     b       off_delay
 
 off_delay:
-    sub    r8, r8, #1       @decreasing counter
+    subs    r8, r8, #1       @decreasing counter
     bne     off_delay
     b       LED_ON
 
 GPIO_BASE:
     .word   0xfe200000  @GPIO Base address Raspberry pi 4
+
 mem_fd:
     .word   device
+
 O_RDWR_O_SYNC:
     .word   2|256       @ O_RDWR (2)|O_SYNC (256).
