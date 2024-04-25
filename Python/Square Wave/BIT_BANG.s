@@ -11,6 +11,10 @@
 .equ    D_ON, 420000 @4294967295                  @delay counter
 .equ    D_OFF, 420000 @4294967295  
 
+@100hz =4460000
+@1khz =420000 50/50
+@ 75/25 1k is 630k on --- 210 off
+
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor
 .equ    mem_fd_open, 3
@@ -61,7 +65,6 @@ main:
     str     r2, [r0]                    @ update register
 
 
-   
 LED_ON:
     add     r0, r5, #GPSET0 @ calc GPSET0 address
     mov     r3, #1          @ turn on bit
@@ -100,6 +103,3 @@ mem_fd:
 
 O_RDWR_O_SYNC:
     .word   2|256       @ O_RDWR (2)|O_SYNC (256).
-
-@100hz =4460000
-@1khz =420000
