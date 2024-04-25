@@ -1,6 +1,6 @@
 @ mmap part taken from by https://bob.cs.sonoma.edu/IntroCompOrg-RPi/sec-gpio-mem.html
 
-@ GPOI21 Related
+@ GPIO 11
 .equ    GPFSEL1, 0x04                   @ function register offset
 .equ    GPCLR0, 0x28                    @ clear register offset
 .equ    GPSET0, 0x1c                    @ set register offset
@@ -13,7 +13,8 @@
 
 @100hz =4460000
 @1khz =420000 50/50
-@ 75/25 1k is 630k on --- 210 off
+@75/25 1k is 630k on --- 210k off
+@1hz , 3600^2
 
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor

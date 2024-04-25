@@ -16,7 +16,9 @@ class SquareWave: #square wave
         if hasattr(self, 'p1') and self.p1.poll() is None:
             self.p1.terminate()
 
-    def update_delay(self, delay):
+    def set_frequency(self, frequency):
+        self.frequency = frequency
+        delay = 10 # Calculate new delay value
         asm_file_path = '/home/pi/Desktop/Group-4/Python/Square Wave/'  #pi4
         with open(asm_file_path, 'r') as file:
             lines = [line.rstrip() for line in file.readlines()]
@@ -29,11 +31,7 @@ class SquareWave: #square wave
         with open(asm_file_path, 'w') as file:
             for line in lines:
                 file.write(line + '\n')
-
-    def set_frequency(self, frequency):
-        self.frequency = frequency
-        delay = 10 # Calculate new delay value
-        self.update_delay(delay)
+                
         sp.Popen('make', shell=False, stdout=sp.PIPE, stderr=sp.DEVNULL).wait()
         #Recompiles file with new frequency
 
