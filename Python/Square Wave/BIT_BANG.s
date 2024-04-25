@@ -8,8 +8,8 @@
 .equ    MAKE_GPIO11_OUTPUT, 0b1000      @ use pin for ouput
 .equ    PIN, 11                         @ Used to set PIN high / low
 
-.equ    D_ON, 10 @4294967295                  @delay counter
-.equ    D_OFF, 100 @4294967295  
+.equ    D_ON, 420000 @4294967295                  @delay counter
+.equ    D_OFF, 420000 @4294967295  
 
 @ Args for mmap
 .equ    OFFSET_FILE_DESCRP, 0   @ file descriptor
@@ -69,8 +69,7 @@ LED_ON:
     orr     r2, r2, r3      @ set bit
     str     r2, [r0]        @ update register
     
-    ldr     r8, =420000
-    @mov     r8, #D_ON
+    ldr     r8, =D_ON
     b       on_delay
 
 on_delay:
@@ -85,8 +84,7 @@ LED_OFF:
     orr     r2, r2, r3      @ set bit
     str     r2, [r0]        @ update register
     
-    ldr     r8, =420000
-    @mov     r8, #D_OFF
+    ldr     r8, =D_OFF
     b       off_delay
 
 off_delay:
